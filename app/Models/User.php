@@ -11,15 +11,27 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+    const TYPE_ADMIN = 'admin';
+    const TYPE_USER = 'user';
+    const TYPES = [self::TYPE_ADMIN, self::TYPE_USER];
+
+    protected $table = 'users';
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name',
+        'type',
+        'mobile',
         'email',
+        'name',
         'password',
+        'avatar',
+        'website',
+        'verify_code',
+        'verified_at',
     ];
 
     /**
@@ -29,7 +41,7 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
-        'remember_token',
+        'verify_code',
     ];
 
     /**
@@ -38,6 +50,6 @@ class User extends Authenticatable
      * @var array
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        'verified_at' => 'datetime',
     ];
 }
