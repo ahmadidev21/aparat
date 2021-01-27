@@ -54,5 +54,15 @@ class User extends Authenticatable
         'verified_at' => 'datetime',
     ];
 
-   
+    /**
+     * پیدا کردن یوزر از طریق موبایل یا ایمیل
+     * @param $username
+     *
+     * @return mixed
+     */
+    public function findForPassport($username)
+    {
+        $user = static::where('mobile', $username)->orWhere('email', $username)->first();
+        return $user;
+    }
 }
