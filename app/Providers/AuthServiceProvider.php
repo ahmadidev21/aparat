@@ -26,7 +26,7 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
         //اضافه کردن روت های پاسپورت
-        Passport::routes();
+//        Passport::routes();
         //اضافه کردن زمان انقضا برای توکن و رفرش توکن
         Passport::tokensExpireIn(now()->addMinutes(config('auth.token_expiration.token')));
         Passport::refreshTokensExpireIn(now()->addMinutes(config('auth.token_expiration.refresh_token')));
