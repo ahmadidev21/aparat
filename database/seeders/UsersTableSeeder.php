@@ -34,7 +34,7 @@ class UsersTableSeeder extends Seeder
     {
         User::factory()->create([
             'name'=>'کاربر1',
-            'email'=>'user1@yahoo.com',
+            'email'=>'user@yahoo.com',
             'mobile'=>'+989222222222',
         ]);
 

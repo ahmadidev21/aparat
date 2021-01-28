@@ -108,6 +108,9 @@ return [
         'refresh_token'=>env('EXPIRATION_TOKEN',43200)//30*24*60=43200
     ],
 
+    //زمان انقضای کش کد ارسالی برا ثبت نام
+    'register_cache_expiration'=>env('EXPIRATION_CACHE_REGISTER', 1440), //24*60
+
     /*
     |--------------------------------------------------------------------------
     | Password Confirmation Timeout

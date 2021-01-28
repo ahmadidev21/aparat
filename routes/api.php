@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 use Laravel\Passport\Http\Controllers\AccessTokenController;
 
 /*
@@ -17,6 +18,8 @@ use Laravel\Passport\Http\Controllers\AccessTokenController;
 // Route Group for authenticated user only
 Route::group([], function (){
      Route::post('login', [AccessTokenController::class, 'issueToken'])->name('auth.login')->middleware('throttle');
+     Route::post('register', [AuthController::class, 'register'])->name('auth.register');
+     Route::post('register-verify', [AuthController::class, 'registerVerify'])->name('auth.register-verify');
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
