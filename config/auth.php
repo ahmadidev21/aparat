@@ -105,11 +105,13 @@ return [
     //تنظیمات به دقیقه هست.
     'token_expiration'=>[
         'token'=>env('EXPIRATION_TOKEN',14400), //10*24*60=14400
-        'refresh_token'=>env('EXPIRATION_TOKEN',43200)//30*24*60=43200
+        'refresh_token'=>env('EXPIRATION_REFRESH_TOKEN',43200)//30*24*60=43200
     ],
 
     //زمان انقضای کش کد ارسالی برا ثبت نام
     'register_cache_expiration'=>env('EXPIRATION_CACHE_REGISTER', 1440), //24*60
+    //فاصله زمانی برای ایجاد کد فعال سازی به دقیقه
+    'resend_verification_code_time_diff'=>env('RESEND_VERIFICATION_CODE_TIME_DIFF', 60),
 
     /*
     |--------------------------------------------------------------------------

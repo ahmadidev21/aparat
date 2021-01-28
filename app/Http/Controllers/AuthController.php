@@ -12,6 +12,7 @@ use App\Http\Requests\Auth\RegisterNewUserRequest;
 use App\Exceptions\UserAlreadyRegisteredException;
 use App\Http\Requests\Auth\RegisterVerifyUserRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Http\Requests\Auth\ResendVerificationCodeRequest;
 
 class AuthController extends Controller
 {
@@ -22,7 +23,7 @@ class AuthController extends Controller
     {
         $field = $request->getFieldName();
         $value = $request->getFieldValue();
-        
+
         if ($field === 'mobile') {
             $value = to_valid_mobile_number($request->input($field));
         }
@@ -38,7 +39,7 @@ class AuthController extends Controller
             $field => $value,
             'verify_code' => $code,
         ]);
-
+        //TODO: send sms or email
         Log::info('SEND_REGISTER_CODE_MESSAGE_TO_USER', ['code' => $code]);
 
         return response(['message' => 'کاربر ثبت موقت شد.'], Response::HTTP_OK);
@@ -71,5 +72,36 @@ class AuthController extends Controller
         $user->save();
 
         return response($user, Response::HTTP_OK);
+    }
+
+
+    public function resendVerificationCode(ResendVerificationCodeRequest $request)
+    {
+        $field = $request->getFieldName();
+        $value = $request->getFieldValue();
+
+        if ($field === 'mobile') {
+            $value = to_valid_mobile_number($request->input($field));
+        }
+
+        $user = User::where($field, $value)->whereNull('verified_at')->first();
+
+        if (! empty($user)) {
+            //اگر زمان مورد نظر از ارسال کد قبلی گذشته بود از کد جدید ارسال میکنیم
+            $dateDiff = now()->diffInMinutes($user->updated_at);
+            if ($dateDiff > config('auth.resend_verification_code_time_diff', 60)) {
+                $user->verify_code = random_verification_code();
+                $user->save();
+            }
+
+            //TODO: send sms or email
+            Log::info('SEND_REGISTER_CODE_MESSAGE_TO_USER', ['code' => $user->verify_code]);
+
+            return response([
+                'message' => 'کد فعال سازی مجددا ارسال شد.',
+            ], Response::HTTP_OK);
+        }
+
+        throw  new ModelNotFoundException('کاربری با این مشخصات یافت نشد یا قبلا فعال سازی شده است');
     }
 }
