@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
 use Laravel\Passport\Http\Controllers\AccessTokenController;
 
 /*
@@ -23,6 +24,9 @@ Route::group([], function ($route){
      Route::post('resend-verification-code', [AuthController::class, 'resendVerificationCode'])->name('auth.resend-verification-code');
 });
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::post('change-email',[UserController::class, 'changeEmail'])->middleware('auth:api')->name('user.change-email');
+Route::post('change-email-submit',[UserController::class, 'changeEmailSubmit'])->middleware('auth:api')->name('user.change-email-submit');
+
+//Route::middleware('auth:api')->get('/user', function (Request $request) {
+//    return $request->user();
+//});

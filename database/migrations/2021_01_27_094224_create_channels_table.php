@@ -16,7 +16,8 @@ class CreateChannelsTable extends Migration
         Schema::create('channels', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('CASCADE')->onUpdate('CASCADE');
-            $table->text('info');
+            $table->string('name');
+            $table->text('info')->nullable();
             $table->string('banner')->nullable();
             $table->text('socials')->nullable();
             $table->timestamps();

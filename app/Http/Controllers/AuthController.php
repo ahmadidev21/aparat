@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Cache;
 use Symfony\Component\HttpFoundation\Response;
 use App\Exceptions\RegisterVerificationException;
 use App\Http\Requests\Auth\RegisterNewUserRequest;
@@ -21,28 +21,42 @@ class AuthController extends Controller
      */
     public function register(RegisterNewUserRequest $request)
     {
-        $field = $request->getFieldName();
-        $value = $request->getFieldValue();
+        try {
+            DB::beginTransaction();
+            $field = $request->getFieldName();
+            $value = $request->getFieldValue();
 
-        if ($field === 'mobile') {
-            $value = to_valid_mobile_number($request->input($field));
-        }
-        if ($user = User::where($field, $value)->first()) {
-            if (! empty($user->verified_at)) {
-                throw new UserAlreadyRegisteredException('شما قبلا ثبت نام کرده اید.');
+            if ($field === 'mobile') {
+                $value = to_valid_mobile_number($request->input($field));
             }
 
-            return response(['message' => 'کد فعال سازی قبلا برای شما ارسال شده است.'], Response::HTTP_OK);
-        }
-        $code = random_int(100000, 999999);
-        User::create([
-            $field => $value,
-            'verify_code' => $code,
-        ]);
-        //TODO: send sms or email
-        Log::info('SEND_REGISTER_CODE_MESSAGE_TO_USER', ['code' => $code]);
+            if ($user = User::where($field, $value)->first()) {
+                if (! empty($user->verified_at)) {
+                    throw new UserAlreadyRegisteredException('شما قبلا ثبت نام کرده اید.');
+                }
 
-        return response(['message' => 'کاربر ثبت موقت شد.'], Response::HTTP_OK);
+                return response(['message' => 'کد فعال سازی قبلا برای شما ارسال شده است.'], Response::HTTP_OK);
+            }
+
+            $code = random_int(100000, 999999);
+            $user = User::create([
+                $field => $value,
+                'verify_code' => $code,
+            ]);
+
+            //TODO: send sms or email
+            Log::info('SEND_REGISTER_CODE_MESSAGE_TO_USER', ['code' => $code]);
+            DB::commit();
+
+            return response(['message' => 'کاربر ثبت موقت شد.'], Response::HTTP_OK);
+        } catch (\Exception $exception) {
+            Log::info($exception);
+            DB::rollBack();
+
+            return response([
+                'message' => 'خطایی در سمت سرور رخ داده است.',
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /*
@@ -73,7 +87,6 @@ class AuthController extends Controller
 
         return response($user, Response::HTTP_OK);
     }
-
 
     public function resendVerificationCode(ResendVerificationCodeRequest $request)
     {
