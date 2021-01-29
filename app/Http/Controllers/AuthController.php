@@ -50,8 +50,12 @@ class AuthController extends Controller
 
             return response(['message' => 'کاربر ثبت موقت شد.'], Response::HTTP_OK);
         } catch (\Exception $exception) {
-            Log::info($exception);
             DB::rollBack();
+
+            if($exception instanceof UserAlreadyRegisteredException){
+                throw $exception;
+            }
+            Log::info($exception);
 
             return response([
                 'message' => 'خطایی در سمت سرور رخ داده است.',
@@ -88,6 +92,9 @@ class AuthController extends Controller
         return response($user, Response::HTTP_OK);
     }
 
+    /*
+     * ارسال محدد کد فعال سازی به کاربر
+     */
     public function resendVerificationCode(ResendVerificationCodeRequest $request)
     {
         $field = $request->getFieldName();
