@@ -112,6 +112,8 @@ return [
     'register_cache_expiration'=>env('EXPIRATION_CACHE_REGISTER', 1440), //24*60
     //فاصله زمانی برای ایجاد کد فعال سازی به دقیقه
     'resend_verification_code_time_diff'=>env('RESEND_VERIFICATION_CODE_TIME_DIFF', 60),
+    //زمان انقضای کش ارسال کد تغییر ایمیل به دقیقه
+    'change_email_cache_expiration'=>env('CHANGE_EMAIL_CACHE_EXPIRATION', 1440), //24*60
 
     /*
     |--------------------------------------------------------------------------
