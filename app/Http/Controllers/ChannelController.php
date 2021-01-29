@@ -16,10 +16,6 @@ class ChannelController extends Controller
     {
         try {
             if($channelId = $request->route('id')){
-                // if id exist it means admin want to update other user channel
-                if(auth()->user()->type != User::TYPE_ADMIN){
-                    throw new AuthorizationException('شما دسترسی به این قسمت ندارید');
-                }
                 $channel = Channel::findOrFail($channelId);
                 $user = $channel->user;
             }else{
@@ -40,12 +36,8 @@ class ChannelController extends Controller
 
             return response(['message'=>'ثبت تغییرات با موفقیت انجام شد.'], Response::HTTP_ACCEPTED);
 
-
         }catch (\Exception $exception){
             DB::rollBack();
-            if ($exception instanceof AuthorizationException){
-                throw $exception;
-            }
             Log::info($exception);
 
             return response(['message'=>'خطایی در سمت سرور رخ داده است.'], Response::HTTP_INTERNAL_SERVER_ERROR);
