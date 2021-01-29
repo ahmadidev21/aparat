@@ -70,4 +70,9 @@ class User extends Authenticatable
     {
         $this->attributes['mobile'] = to_valid_mobile_number($value);
     }
+
+    public function channel()
+    {
+        return $this->hasOne(Channel::class);
+    }
 }
