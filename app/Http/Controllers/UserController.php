@@ -13,7 +13,9 @@ use App\Http\Requests\User\ChangeEmailSubmitRequest;
 class UserController extends Controller
 {
     const CHANGE_EMAIL_CACHE_KEY = 'change.email.for.user.';
-
+    /*
+     * تغییر ایمیل کاربر
+     */
     public function changeEmail(ChangeEmialRequest $request)
     {
         try {
@@ -40,6 +42,9 @@ class UserController extends Controller
         }
     }
 
+    /*
+     * تایید تغییر ایمیل کاربر
+     */
     public function changeEmailSubmit(ChangeEmailSubmitRequest $request)
     {
         $userId = auth()->id();
