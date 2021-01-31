@@ -22,6 +22,7 @@ Route::post('resend-verification-code', [AuthController::class, 'resendVerificat
 Route::group(['middleware'=>['auth:api']], function (){
 Route::post('change-email',[UserController::class, 'changeEmail'])->name('user.change-email');
 Route::post('change-email-submit',[UserController::class, 'changeEmailSubmit'])->name('user.change-email-submit');
+Route::match(['post', 'put'], 'change-password', [UserController::class, 'changePassword'])->name('user.change-password');
 });
 
 /**

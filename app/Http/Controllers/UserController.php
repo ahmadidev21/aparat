@@ -4,16 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\User\ChangeEmialRequest;
 use Symfony\Component\HttpFoundation\Response;
 use Exception;
+use App\Http\Requests\User\ChangePasswordRequest;
 use App\Http\Requests\User\ChangeEmailSubmitRequest;
 
 class UserController extends Controller
 {
     const CHANGE_EMAIL_CACHE_KEY = 'change.email.for.user.';
-    /*
+    /**
      * تغییر ایمیل کاربر
      */
     public function changeEmail(ChangeEmialRequest $request)
@@ -42,7 +44,7 @@ class UserController extends Controller
         }
     }
 
-    /*
+    /**
      * تایید تغییر ایمیل کاربر
      */
     public function changeEmailSubmit(ChangeEmailSubmitRequest $request)
@@ -62,5 +64,27 @@ class UserController extends Controller
         return response([
             'message'=>'ایمیل با موفقیت تغییر یافت'
         ], Response::HTTP_ACCEPTED);
+    }
+
+    /**
+     * تغییر رمز عبور
+     */
+    public function changePassword(ChangePasswordRequest $request)
+    {
+        try {
+            $user = auth()->user();
+
+            if(!Hash::check($request->oldPassword, $user->password)){
+                return response(['message'=>'گذر واژه وارد شده مطابقت ندارد.'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+            $user->password = bcrypt($request->newPassword);
+            $user->save();
+
+            return response(['message'=>'تغییر گذر واژه با موفقیت انجام شد'], Response::HTTP_ACCEPTED);
+        }catch (Exception $exception){
+            Log::info($exception);
+            return response(['message'=>'خطایی در سمت سرور رخ داده است.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
     }
 }
