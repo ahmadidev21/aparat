@@ -29,7 +29,9 @@ Route::post('change-email-submit',[UserController::class, 'changeEmailSubmit'])-
  */
 Route::group(['middleware'=>['auth:api'], 'prefix'=>'/channel'], function (){
     Route::match(['post', 'put'],'upload', [ChannelController::class, 'uploadAvatarForChannel'])->name('channel.upload-avatar');
+    Route::match(['post', 'put'],'socials', [ChannelController::class, 'updateSocials'])->name('channel.update-socials');
     Route::put('{id?}', [ChannelController::class, 'updateChannelInfo'])->name('channel.update');
+
 });
 
 

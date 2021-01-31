@@ -8,21 +8,22 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Requests\Channel\updateSocialRequest;
 use App\Http\Requests\Channel\UpdateChannelRequest;
 use App\Http\Requests\Channel\UploadAvatarForChannelRequest;
 
 class ChannelController extends Controller
 {
-   /**
-    * آپدیت کردن اطلاعات کانال
-    */
+    /**
+     * آپدیت کردن اطلاعات کانال
+     */
     public function updateChannelInfo(UpdateChannelRequest $request)
     {
         try {
-            if($channelId = $request->route('id')){
+            if ($channelId = $request->route('id')) {
                 $channel = Channel::findOrFail($channelId);
                 $user = $channel->user;
-            }else{
+            } else {
                 $user = auth()->user();
                 $channel = $user->channel;
             }
@@ -38,13 +39,12 @@ class ChannelController extends Controller
 
             DB::commit();
 
-            return response(['message'=>'ثبت تغییرات با موفقیت انجام شد.'], Response::HTTP_ACCEPTED);
-
-        }catch (\Exception $exception){
+            return response(['message' => 'ثبت تغییرات با موفقیت انجام شد.'], Response::HTTP_ACCEPTED);
+        } catch (\Exception $exception) {
             DB::rollBack();
             Log::info($exception);
 
-            return response(['message'=>'خطایی در سمت سرور رخ داده است.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response(['message' => 'خطایی در سمت سرور رخ داده است.'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -55,24 +55,43 @@ class ChannelController extends Controller
     {
         try {
             $banner = $request->file('banner');
-            $fileName = auth()->id().'-'.Str::random(15);
+            $fileName = auth()->id() . '-' . Str::random(15);
             $banner->move(public_path('channel-banner'), $fileName);
             $channel = auth()->user()->channel;
-            if($channel->banner){
+            if ($channel->banner) {
                 unlink(public_path($channel->banner));
             }
-            $channel->banner = 'channel-banner/'.$fileName;
+            $channel->banner = 'channel-banner/' . $fileName;
             $channel->save();
 
             return response([
-                'banner'=>url('channel-banner/'.$fileName)
+                'banner' => url('channel-banner/' . $fileName),
             ], Response::HTTP_OK);
-        }catch (Exception $exception){
+        } catch (Exception $exception) {
             Log::info($exception);
-            return response(['message'=>'خطایی در سمت سرور رخ داده است.'], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
 
+            return response(['message' => 'خطایی در سمت سرور رخ داده است.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
-    
+    public function updateSocials(updateSocialRequest $request)
+    {
+        try {
+            $socials = [
+                'cloob' => $request->cloob,
+                'lenzor' => $request->lenzor,
+                'twitter' => $request->twitter,
+                'facebook' => $request->facebook,
+                'telegram' => $request->telegram,
+            ];
+
+            auth()->user()->channel->update(['socials' =>$socials]);
+
+            return response(['message' => 'ثبت تغییرات با موفقیت انجام شد'], Response::HTTP_ACCEPTED);
+        } catch (Exception $exception) {
+            Log::info($exception);
+
+            return response(['message' => 'خطایی در سمت سرور رخ داده است.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }
