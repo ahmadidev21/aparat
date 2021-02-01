@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VideoController;
 use App\Http\Controllers\ChannelController;
 use Laravel\Passport\Http\Controllers\AccessTokenController;
 
@@ -35,6 +36,14 @@ Route::group(['middleware'=>['auth:api'], 'prefix'=>'/channel'], function (){
 
 });
 
+/**
+ * Rout Group for Video
+ */
+Route::group(['middleware'=>['auth:api'], 'prefix'=>'/video'], function (){
+    Route::post('/upload', [VideoController::class, 'uploadVideo'])->name('video.upload');
+    Route::post('/upload-banner', [VideoController::class, 'uploadBanner'])->name('video.upload-banner');
+    Route::post('/', [VideoController::class, 'createVideo'])->name('video.create');
+});
 
 //Route::middleware('auth:api')->get('/user', function (Request $request) {
 //    return $request->user();
