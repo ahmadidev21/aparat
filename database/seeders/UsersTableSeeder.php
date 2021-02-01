@@ -15,7 +15,7 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
         if(User::query()->count()){
-            return;
+            User::query()->truncate();
         }
         $this->createAdminUser();
         $this->createUser();
