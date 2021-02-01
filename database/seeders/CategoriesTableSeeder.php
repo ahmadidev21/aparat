@@ -14,107 +14,136 @@ class CategoriesTableSeeder extends Seeder
      */
     public function run()
     {
-        if(Category::query()->count()){
+        if (Category::query()->count()) {
             Category::query()->truncate();
         }
         $categories = [
             'علم و تکنولوژی' => [
-                'icon' => '',
+                'icon' => null,
                 'banner' => null,
+                'user_id' => null,
             ],
             'خبری' => [
-                'icon' => '',
+                'icon' => null,
                 'banner' => null,
+                'user_id' => null,
             ],
             'کارتون' => [
-                'icon' => '',
+                'icon' => null,
                 'banner' => null,
+                'user_id' => null,
             ],
             'طنز' => [
-                'icon' => '',
+                'icon' => null,
                 'banner' => null,
+                'user_id' => null,
             ],
             'آموزشی' => [
-                'icon' => '',
+                'icon' => null,
                 'banner' => null,
+                'user_id' => null,
             ],
             'تفریحی' => [
-                'icon' => '',
+                'icon' => null,
                 'banner' => null,
+                'user_id' => null,
             ],
             'فیلم' => [
-                'icon' => '',
+                'icon' => null,
                 'banner' => null,
+                'user_id' => null,
             ],
             'مذهبی' => [
-                'icon' => '',
+                'icon' => null,
                 'banner' => null,
+                'user_id' => null,
             ],
             'موسیقی' => [
-                'icon' => '',
+                'icon' => null,
                 'banner' => null,
+                'user_id' => null,
             ],
             'سیاسی' => [
-                'icon' => '',
+                'icon' => null,
                 'banner' => null,
+                'user_id' => null,
             ],
             'ورزشی' => [
-                'icon' => '',
+                'icon' => null,
                 'banner' => null,
+                'user_id' => null,
             ],
             'حوادث' => [
-                'icon' => '',
+                'icon' => null,
                 'banner' => null,
+                'user_id' => null,
             ],
             'گیم' => [
-                'icon' => '',
+                'icon' => null,
                 'banner' => null,
+                'user_id' => null,
             ],
             'گردشگری' => [
-                'icon' => '',
+                'icon' => null,
                 'banner' => null,
+                'user_id' => null,
             ],
             'حیوانات' => [
-                'icon' => '',
+                'icon' => null,
                 'banner' => null,
+                'user_id' => null,
             ],
             'متفرقه' => [
-                'icon' => '',
+                'icon' => null,
                 'banner' => null,
+                'user_id' => null,
             ],
             'تبلیغات' => [
-                'icon' => '',
+                'icon' => null,
                 'banner' => null,
+                'user_id' => null,
             ],
             'هنری' => [
-                'icon' => '',
+                'icon' => null,
                 'banner' => null,
+                'user_id' => null,
             ],
             'بانوان' => [
-                'icon' => '',
+                'icon' => null,
                 'banner' => null,
+                'user_id' => null,
             ],
             'سلامت' => [
-                'icon' => '',
+                'icon' => null,
                 'banner' => null,
+                'user_id' => null,
             ],
             'آشپزی' => [
-                'icon' => '',
+                'icon' => null,
                 'banner' => null,
+                'user_id' => null,
             ],
             'سریال و فیلم‌های سینمایی' => [
-                'icon' => '',
+                'icon' => null,
                 'banner' => null,
+                'user_id' => null,
+            ],
+            //دسته بندی مختص کاربر 1
+            'دسته بندی 1' => [
+                'icon' => null,
+                'banner' => null,
+                'user_id' => 1,
             ],
         ];
 
-        foreach ($categories as $categoryName => $option){
-                Category::create([
-                    'title'=>$categoryName,
-                    'icon'=>$option['icon'],
-                    'banner'=>$option['banner']
-                ]);
-            $this->command->info('add '.$categoryName.' category');
+        foreach ($categories as $categoryName => $option) {
+            Category::create([
+                'title' => $categoryName,
+                'icon' => $option['icon'],
+                'banner' => $option['banner'],
+                'user_id' => $option['user_id'],
+            ]);
+            $this->command->info('add ' . $categoryName . ' category');
         }
     }
 }
