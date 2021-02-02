@@ -20,4 +20,13 @@ if (! function_exists('random_verification_code')) {
     }
 }
 
+if (! function_exists('uniqueId')) {
+    function uniqueId(int $value)
+    {
+        $hash = new \Hashids\Hashids(env('APP_KEY'), 10);
+
+        return $hash->encode($value);
+    }
+}
+
 
