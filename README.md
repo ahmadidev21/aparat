@@ -10,5 +10,7 @@ Laravel is accessible, powerful, and provides tools required for large, robust a
 
 - **[laravel-ide-helper](https://github.com/barryvdh/laravel-ide-helper)**
 
+- **[hashids/hashids](https://packagist.org/packages/hashids/hashids)**
+
 
 
