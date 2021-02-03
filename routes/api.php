@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VideoController;
 use App\Http\Controllers\ChannelController;
+use App\Http\Controllers\CategoryController;
 use Laravel\Passport\Http\Controllers\AccessTokenController;
 
 /**
@@ -45,6 +46,10 @@ Route::group(['middleware'=>['auth:api'], 'prefix'=>'/video'], function (){
     Route::post('/', [VideoController::class, 'createVideo'])->name('video.create');
 });
 
+Route::group(['middleware'=>['auth:api'], 'prefix'=>'/category'], function (){
+    Route::get('/', [CategoryController::class, 'getAllCategories'])->name('category.all');
+    Route::get('/my', [CategoryController::class, 'getMyCategories'])->name('category.all');
+});
 //Route::middleware('auth:api')->get('/user', function (Request $request) {
 //    return $request->user();
 //});
