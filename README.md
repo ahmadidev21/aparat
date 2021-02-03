@@ -12,5 +12,7 @@ Laravel is accessible, powerful, and provides tools required for large, robust a
 
 - **[hashids/hashids](https://packagist.org/packages/hashids/hashids)**
 
+- **[pbmedia/laravel-ffmpeg](https://packagist.org/packages/pbmedia/laravel-ffmpeg)**
+
 
 
