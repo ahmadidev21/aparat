@@ -10,9 +10,11 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
+use ProtoneMedia\LaravelFFMpeg\Support\FFMpeg;
 use App\Http\Requests\Video\UploadVideoRequest;
 use App\Http\Requests\Video\CreateVideoRequest;
 use App\Http\Requests\Video\UploadVideoBannerRequest;
+
 
 class VideoController extends Controller
 {
@@ -58,6 +60,8 @@ class VideoController extends Controller
     public function createVideo(CreateVideoRequest $request)
     {
         try {
+            $video = FFMpeg::fromDisk('videos')->open('/temp/'.$request->video_id);
+
             DB::beginTransaction();
 
             $video = Video::create([
@@ -66,10 +70,8 @@ class VideoController extends Controller
                 'category_id' => $request->category_id,
                 'channel_category_id' => $request->channel_category,
                 'slug' => '',
-                //TODO: calculate slug
                 'info' => $request->info,
-                'duration' => 0,
-                //TODO: get video duration by FFMPEG
+                'duration' => $video->getDurationInSeconds(),
                 'banner' => null,
                 'publish_at' => $request->publish_at,
             ]);
