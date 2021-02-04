@@ -2,6 +2,7 @@
 /public/hot
 /public/channel-banner
 /public/video
+/public/category
 /public/storage
 /storage/*.key
 /vendor
