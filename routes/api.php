@@ -48,7 +48,9 @@ Route::group(['middleware'=>['auth:api'], 'prefix'=>'/video'], function (){
 
 Route::group(['middleware'=>['auth:api'], 'prefix'=>'/category'], function (){
     Route::get('/', [CategoryController::class, 'getAllCategories'])->name('category.all');
-    Route::get('/my', [CategoryController::class, 'getMyCategories'])->name('category.all');
+    Route::get('/my', [CategoryController::class, 'getMyCategories'])->name('category.my');
+    Route::post('/upload-banner', [CategoryController::class, 'uploadBanner'])->name('category.upload-banner');
+    Route::post('/', [CategoryController::class, 'create'])->name('category.create');
 });
 //Route::middleware('auth:api')->get('/user', function (Request $request) {
 //    return $request->user();

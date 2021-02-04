@@ -12,4 +12,11 @@ class Category extends Model
     protected $table = 'categories';
 
     protected $fillable = ['user_id','title', 'icon', 'banner'];
+
+    //region relation
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+    //endregion relation
 }

@@ -75,4 +75,11 @@ class User extends Authenticatable
     {
         return $this->hasOne(Channel::class);
     }
+
+    //region relation
+    public function categories()
+    {
+        return $this->hasMany(Category::class);
+    }
+    //endregion relation
 }
