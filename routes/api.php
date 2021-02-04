@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\VideoController;
 use App\Http\Controllers\ChannelController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\PlaylistController;
 use Laravel\Passport\Http\Controllers\AccessTokenController;
 
 /**
@@ -46,11 +47,22 @@ Route::group(['middleware'=>['auth:api'], 'prefix'=>'/video'], function (){
     Route::post('/', [VideoController::class, 'createVideo'])->name('video.create');
 });
 
+/**
+ * Rout Group for Category
+ */
 Route::group(['middleware'=>['auth:api'], 'prefix'=>'/category'], function (){
     Route::get('/', [CategoryController::class, 'getAllCategories'])->name('category.all');
     Route::get('/my', [CategoryController::class, 'getMyCategories'])->name('category.my');
     Route::post('/upload-banner', [CategoryController::class, 'uploadBanner'])->name('category.upload-banner');
     Route::post('/', [CategoryController::class, 'create'])->name('category.create');
+});
+
+/**
+ * Rout Group for Playlist
+ */
+Route::group(['middleware'=>['auth:api'], 'prefix'=>'/playlist'], function (){
+    Route::get('/', [PlaylistController::class, 'getAllPlaylist'])->name('playlist.all');
+    Route::get('/my', [PlaylistController::class, 'getMyPlaylist'])->name('playlist.my');
 });
 //Route::middleware('auth:api')->get('/user', function (Request $request) {
 //    return $request->user();

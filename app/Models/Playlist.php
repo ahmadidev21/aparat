@@ -13,8 +13,15 @@ class Playlist extends Model
 
     protected $fillable =['user_id', 'title'];
 
+    //region relation
     public function videos()
     {
         return $this->belongsToMany(Video::class, 'playlist_videos');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+    //endregion relation
 }
