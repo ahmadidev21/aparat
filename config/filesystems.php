@@ -56,6 +56,10 @@ return [
             'driver' => 'local',
             'root' => public_path('video'),
         ],
+        'category' => [
+            'driver' => 'local',
+            'root' => public_path('category'),
+        ],
 
     ],
 
