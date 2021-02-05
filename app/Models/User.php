@@ -12,10 +12,13 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable, HasApiTokens;
 
+    //region types
     const TYPE_ADMIN = 'admin';
     const TYPE_USER = 'user';
     const TYPES = [self::TYPE_ADMIN, self::TYPE_USER];
+   //endregion types
 
+    //region model configs
     protected $table = 'users';
 
     /**
@@ -54,6 +57,9 @@ class User extends Authenticatable
         'verified_at' => 'datetime',
     ];
 
+    //endregion model configs
+
+    //region custom method
     /**
      * پیدا کردن یوزر از طریق موبایل یا ایمیل
      * @param $username
@@ -66,17 +72,21 @@ class User extends Authenticatable
         return $user;
     }
 
+    //endregion custom method
+
+    //region setter
     public function setMobileAttribute($value)
     {
         $this->attributes['mobile'] = to_valid_mobile_number($value);
     }
+    //endregion setter
 
+    //region relation
     public function channel()
     {
         return $this->hasOne(Channel::class);
     }
 
-    //region relation
     public function categories()
     {
         return $this->hasMany(Category::class);
@@ -86,5 +96,6 @@ class User extends Authenticatable
     {
         return $this->hasMany(Playlist::class);
     }
+
     //endregion relation
 }
