@@ -12,4 +12,14 @@ class Tag extends Model
     protected $table = 'tags';
 
     protected $fillable = ['title'];
+
+    //region override model method
+    public function toArray()
+    {
+        return [
+            'id'=>$this->id,
+            'title'=>$this->title
+        ];
+    }
+    //endregion override model method
 }

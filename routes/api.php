@@ -67,8 +67,12 @@ Route::group(['middleware'=>['auth:api'], 'prefix'=>'/playlist'], function (){
     Route::post('/create', [PlaylistController::class, 'create'])->name('playlist.create');
 });
 
+/**
+ * Rout Group for Tag
+ */
 Route::group(['middleware'=>['auth:api'], 'prefix'=>'/tag'], function (){
     Route::get('/', [TagController::class, 'index'])->name('playlist.all');
+    Route::post('/create', [TagController::class, 'create'])->name('playlist.create');
 });
 //Route::middleware('auth:api')->get('/user', function (Request $request) {
 //    return $request->user();
