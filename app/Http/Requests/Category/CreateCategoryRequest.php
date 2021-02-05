@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Category;
 
+use App\Rules\UniqueForUser;
 use App\Rules\UploadedCategoryBannerId;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -25,7 +26,7 @@ class CreateCategoryRequest extends FormRequest
     public function rules()
     {
         return [
-            'title'=>'required|string|min:2|max:100|unique:categories,title',
+            'title'=>['required', 'string','min:2','max:100', new UniqueForUser('categories')],
             'icon'=>'nullable|string',//TODO: Certain use which icon
             'banner'=>['nullable', new UploadedCategoryBannerId()]
         ];
