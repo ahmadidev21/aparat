@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TagController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VideoController;
@@ -64,6 +65,10 @@ Route::group(['middleware'=>['auth:api'], 'prefix'=>'/playlist'], function (){
     Route::get('/', [PlaylistController::class, 'getAllPlaylist'])->name('playlist.all');
     Route::get('/my', [PlaylistController::class, 'getMyPlaylist'])->name('playlist.my');
     Route::post('/create', [PlaylistController::class, 'create'])->name('playlist.create');
+});
+
+Route::group(['middleware'=>['auth:api'], 'prefix'=>'/tag'], function (){
+    Route::get('/', [TagController::class, 'index'])->name('playlist.all');
 });
 //Route::middleware('auth:api')->get('/user', function (Request $request) {
 //    return $request->user();
