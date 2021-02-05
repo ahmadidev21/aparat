@@ -24,6 +24,6 @@ class PlaylistController extends Controller
         $user = auth()->user();
         $playlist = $user->playlists()->create($request->validated());
 
-        return response(['data'=>$playlist], Response::HTTP_CREATED);
+        return response([$playlist], Response::HTTP_CREATED);
     }
 }

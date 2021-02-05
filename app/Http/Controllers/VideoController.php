@@ -97,7 +97,7 @@ class VideoController extends Controller
 
             DB::commit();
 
-            return response(['data' => $video], Response::HTTP_OK);
+            return response([$video], Response::HTTP_OK);
         } catch (Exception $exception) {
             DB::rollBack();
             Log::info($exception);

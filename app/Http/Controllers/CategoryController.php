@@ -52,7 +52,7 @@ class CategoryController extends Controller
             $category = $user->categories()->create($data);
             DB::commit();
 
-            return response(['data' => $category], Response::HTTP_CREATED);
+            return response([$category], Response::HTTP_CREATED);
         } catch (Exception $exception) {
             DB::rollBack();
             Log::info($exception);

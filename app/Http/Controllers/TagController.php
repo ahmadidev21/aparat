@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Tag;
 use Illuminate\Http\Request;
 
 class TagController extends Controller
 {
     public function index()
     {
-        dd("salam");
+        return Tag::all(['id', 'title']);
     }
 }
