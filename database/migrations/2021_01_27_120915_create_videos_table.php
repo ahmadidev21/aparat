@@ -23,6 +23,7 @@ class CreateVideosTable extends Migration
             $table->text('info')->nullable();
             $table->integer('duration');
             $table->string('banner')->nullable();
+            $table->boolean('enable_comments')->default(true);
             $table->timestamp('publish_at')->nullable();
             $table->timestamps();
         });
