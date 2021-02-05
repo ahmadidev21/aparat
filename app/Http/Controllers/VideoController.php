@@ -8,13 +8,13 @@ use App\Models\Playlist;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use FFMpeg\Filters\Video\CustomFilter;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
 use ProtoneMedia\LaravelFFMpeg\Support\FFMpeg;
 use App\Http\Requests\Video\UploadVideoRequest;
 use App\Http\Requests\Video\CreateVideoRequest;
 use App\Http\Requests\Video\UploadVideoBannerRequest;
-
 
 class VideoController extends Controller
 {
@@ -26,7 +26,7 @@ class VideoController extends Controller
         try {
             $video = $request->file('video');
             $fileName = time() . '_' . Str::random(10);
-            Storage::disk('videos')->put('temp/'.$fileName, $video->get());
+            Storage::disk('videos')->put('temp/' . $fileName, $video->get());
 
             return response(['video' => $fileName], Response::HTTP_OK);
         } catch (Exception $exception) {
@@ -44,7 +44,7 @@ class VideoController extends Controller
         try {
             $banner = $request->file('banner');
             $fileName = time() . '_' . Str::random(10) . '-banner';
-            Storage::disk('videos')->put('temp/'.$fileName, $banner->get());
+            Storage::disk('videos')->put('temp/' . $fileName, $banner->get());
 
             return response(['banner' => $fileName], Response::HTTP_OK);
         } catch (Exception $exception) {
@@ -60,7 +60,19 @@ class VideoController extends Controller
     public function createVideo(CreateVideoRequest $request)
     {
         try {
-            $video = FFMpeg::fromDisk('videos')->open('/temp/'.$request->video_id);
+            $video = FFMpeg::fromDisk('videos')->open('/temp/' . $request->video_id);
+
+            $filter = new CustomFilter(
+                "drawtext=text='http\\://pydeveloper.ir: fontcolor=white: fontsize=24: 
+                box=1: boxcolor=red@0.5: boxborderw=5: x=10: y=(h - text_h - 10)'");
+            $format = new \FFMpeg\Format\Video\WMV();
+            $video->addFilter($filter)
+                ->export()
+                ->toDisk('videos')
+                ->inFormat($format)
+                ->save('temp/export.mkv');
+
+            dd('saved');
 
             DB::beginTransaction();
 
