@@ -38,6 +38,7 @@ class CreateVideoRequest extends FormRequest
             'channel_category'=>['nullable', new CategoryId(CategoryId::PRIVATE_CATEGORY)],
             'banner'=>['nullable', new UploadedVideoBannerId()],
             'publish_at'=>'nullable|date_format:Y-m-d H:i:s|after:now',
+            'enable_comments'=>'required|boolean'
         ];
     }
 }

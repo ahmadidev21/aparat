@@ -20,6 +20,7 @@ class Video extends Model
         'info',
         'duration',
         'banner',
+        'enable_comments',
         'publish_at',
     ];
 

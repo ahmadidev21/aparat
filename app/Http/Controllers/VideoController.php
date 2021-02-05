@@ -73,6 +73,7 @@ class VideoController extends Controller
                 'info' => $request->info,
                 'duration' => $video->getDurationInSeconds(),
                 'banner' => null,
+                'enable_comments' => $request->enable_comments,
                 'publish_at' => $request->publish_at,
             ]);
 
