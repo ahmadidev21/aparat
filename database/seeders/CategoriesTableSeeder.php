@@ -132,7 +132,7 @@ class CategoriesTableSeeder extends Seeder
             'دسته بندی 1' => [
                 'icon' => null,
                 'banner' => null,
-                'user_id' => 1,
+                'user_id' => 2,
             ],
         ];
 

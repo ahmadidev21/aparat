@@ -6,6 +6,7 @@ use Exception;
 use App\Models\Video;
 use App\Models\Playlist;
 use Illuminate\Support\Str;
+use FFMpeg\Format\Video\X264;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use FFMpeg\Filters\Video\CustomFilter;
@@ -60,19 +61,17 @@ class VideoController extends Controller
     public function createVideo(CreateVideoRequest $request)
     {
         try {
-            $video = FFMpeg::fromDisk('videos')->open('/temp/' . $request->video_id);
+            $videoUploadedPath = '/temp/' . $request->video_id;
+            $videoUploaded = FFMpeg::fromDisk('videos')->open($videoUploadedPath);
 
             $filter = new CustomFilter(
                 "drawtext=text='http\\://pydeveloper.ir: fontcolor=white: fontsize=24: 
                 box=1: boxcolor=red@0.5: boxborderw=5: x=10: y=(h - text_h - 10)'");
-            $format = new \FFMpeg\Format\Video\WMV();
-            $video->addFilter($filter)
+            $format = new X264('libmp3lame');
+            $videoFile = $videoUploaded->addFilter($filter)
                 ->export()
                 ->toDisk('videos')
-                ->inFormat($format)
-                ->save('temp/export.mkv');
-
-            dd('saved');
+                ->inFormat($format);
 
             DB::beginTransaction();
 
@@ -83,7 +82,7 @@ class VideoController extends Controller
                 'channel_category_id' => $request->channel_category,
                 'slug' => '',
                 'info' => $request->info,
-                'duration' => $video->getDurationInSeconds(),
+                'duration' => $videoUploaded->getDurationInSeconds(),
                 'banner' => null,
                 'enable_comments' => $request->enable_comments,
                 'publish_at' => $request->publish_at,
@@ -93,7 +92,9 @@ class VideoController extends Controller
             $video->banner = $video->slug . '-banner';
             $video->save();
 
-            Storage::disk('videos')->move('temp/' . $request->video_id, auth()->id() . '/' . $video->slug);
+            $videoFile->save(auth()->id().'/'. $video->slug.'.mp4');
+            Storage::disk('videos')->delete($videoUploadedPath);
+
             if ($request->banner) {
                 $banner = $request->video_id . '-banner';
                 Storage::disk('videos')->move('temp/' . $request->banner, auth()->id() . '/' . $video->banner);
