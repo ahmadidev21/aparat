@@ -9,6 +9,15 @@ class Video extends Model
 {
     use HasFactory;
 
+    //region state
+    const STATE_PENDING = 'pending';
+    const STATE_CONVERTED = 'converted';
+    const STATE_ACCEPTED = 'accepted';
+    const STATE_BLOCKED = 'bloked';
+    const STATES = [self::STATE_PENDING, self::STATE_CONVERTED, self::STATE_ACCEPTED, self::STATE_BLOCKED];
+    //endregion state
+
+    //region model config
     protected $table = 'videos';
 
     protected $fillable = [
@@ -23,6 +32,7 @@ class Video extends Model
         'enable_comments',
         'publish_at',
     ];
+    //endregion model config
 
     //region relation
     public function tags()
