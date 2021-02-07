@@ -7,6 +7,7 @@ use App\Models\Video;
 use App\Models\Playlist;
 use Illuminate\Support\Str;
 use FFMpeg\Format\Video\X264;
+use App\Events\UploadeNewVideo;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use FFMpeg\Filters\Video\CustomFilter;
@@ -61,18 +62,6 @@ class VideoController extends Controller
     public function createVideo(CreateVideoRequest $request)
     {
         try {
-            $videoUploadedPath = '/temp/' . $request->video_id;
-            $videoUploaded = FFMpeg::fromDisk('videos')->open($videoUploadedPath);
-
-            $filter = new CustomFilter(
-                "drawtext=text='http\\://pydeveloper.ir: fontcolor=white: fontsize=24: 
-                box=1: boxcolor=red@0.5: boxborderw=5: x=10: y=(h - text_h - 10)'");
-            $format = new X264('libmp3lame');
-            $videoFile = $videoUploaded->addFilter($filter)
-                ->export()
-                ->toDisk('videos')
-                ->inFormat($format);
-
             DB::beginTransaction();
 
             $video = Video::create([
@@ -82,7 +71,7 @@ class VideoController extends Controller
                 'channel_category_id' => $request->channel_category,
                 'slug' => '',
                 'info' => $request->info,
-                'duration' => $videoUploaded->getDurationInSeconds(),
+                'duration' => 0,
                 'banner' => null,
                 'enable_comments' => $request->enable_comments,
                 'publish_at' => $request->publish_at,
@@ -93,8 +82,7 @@ class VideoController extends Controller
             $video->banner = $video->slug . '-banner';
             $video->save();
 
-            $videoFile->save(auth()->id().'/'. $video->slug.'.mp4');
-            Storage::disk('videos')->delete($videoUploadedPath);
+            event(new UploadeNewVideo($video, $request));
 
             if ($request->banner) {
                 $banner = $request->video_id . '-banner';
