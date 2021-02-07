@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Video;
 
 use App\Models\Video;
+use App\Rules\CanChangeVieoState;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ChangeStateVideoRequest extends FormRequest
@@ -25,7 +26,7 @@ class ChangeStateVideoRequest extends FormRequest
     public function rules()
     {
         return [
-            'state'=>'required|in:'.Video::STATE_ACCEPTED.','.Video::STATE_BLOCKED
+            'state'=>['required', new CanChangeVieoState($this->video)]
         ];
     }
 }

@@ -113,11 +113,11 @@ class VideoController extends Controller
 
     public function changeState(ChangeStateVideoRequest $request)
     {
-        $video = Video::query()->where('slug', $request->slug)->first();
+        $video = $request->video;
         if(empty($video)){
             throw new ModelNotFoundException('Video Model Not found');
         }
-        $video->state = Video::STATE_ACCEPTED;
+        $video->state = $request->state;
         $video->save();
         return response(['video'=>$video], Response::HTTP_ACCEPTED);
     }
