@@ -72,6 +72,16 @@ class User extends Authenticatable
         return $user;
     }
 
+    public function isAdmin()
+    {
+        return $this->type === User::TYPE_ADMIN;
+    }
+
+    public function isUser()
+    {
+        return $this->type === User::TYPE_USER;
+    }
+
     //endregion custom method
 
     //region setter

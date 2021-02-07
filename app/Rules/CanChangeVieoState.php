@@ -17,7 +17,7 @@ class CanChangeVieoState implements Rule
      *
      * @param  \App\Models\Video  $video
      */
-    public function __construct(Video $video)
+    public function __construct(Video $video=null)
     {
         //
         $this->video = $video;

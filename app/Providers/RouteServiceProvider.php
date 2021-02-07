@@ -52,6 +52,8 @@ class RouteServiceProvider extends ServiceProvider
 //        Route::bind('video', function ($value){
 ////            return Video::query()->where('slug', $value)->firstOrFail();
 ////        });
+
+        //model binding for video model
           Route::model('video', Video::class);
     }
 
