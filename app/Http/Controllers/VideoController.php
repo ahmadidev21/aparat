@@ -16,7 +16,9 @@ use Symfony\Component\HttpFoundation\Response;
 use ProtoneMedia\LaravelFFMpeg\Support\FFMpeg;
 use App\Http\Requests\Video\UploadVideoRequest;
 use App\Http\Requests\Video\CreateVideoRequest;
+use App\Http\Requests\Video\ChangeStateVideoRequest;
 use App\Http\Requests\Video\UploadVideoBannerRequest;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class VideoController extends Controller
 {
@@ -107,5 +109,16 @@ class VideoController extends Controller
 
             return response(['message' => 'خطایی در سمت سرور رخ داده است.'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public function changeState(ChangeStateVideoRequest $request)
+    {
+        $video = Video::query()->where('slug', $request->slug)->first();
+        if(empty($video)){
+            throw new ModelNotFoundException('Video Model Not found');
+        }
+        $video->state = Video::STATE_ACCEPTED;
+        $video->save();
+        return response(['video'=>$video], Response::HTTP_ACCEPTED);
     }
 }

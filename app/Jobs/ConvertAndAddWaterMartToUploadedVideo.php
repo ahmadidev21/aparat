@@ -68,5 +68,7 @@ class ConvertAndAddWaterMartToUploadedVideo implements ShouldQueue
         $videoFile->save($this->authId.'/'. $this->video->slug.'.mp4');
         Storage::disk('videos')->delete($videoUploadedPath);
         $this->video->duration = $videoUploaded->getDurationInSeconds();
+        $this->video->state = Video::STATE_CONVERTED;
+        $this->video->save();
     }
 }
