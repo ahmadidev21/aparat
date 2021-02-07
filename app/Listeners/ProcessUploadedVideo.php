@@ -34,6 +34,7 @@ class ProcessUploadedVideo
     {
         $video = $event->getVideo();
         $VideoId = $event->getRequest()->video_id;
-       ConvertAndAddWaterMartToUploadedVideo::dispatch($video, $VideoId);
+        $addWatermark =  $event->getRequest()->enable_watermark;
+       ConvertAndAddWaterMartToUploadedVideo::dispatch($video, $VideoId, $addWatermark);
     }
 }
