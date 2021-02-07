@@ -1,5 +1,5 @@
 <?php
-
+use Illuminate\Support\Facades\Log;
 /**
  * اضافه کردن +98 به ابتدای شماره موبایل
  */
@@ -28,5 +28,23 @@ if (! function_exists('uniqueId')) {
         return $hash->encode($value);
     }
 }
+
+if (! function_exists('clear_storage')) {
+    function clear_storage($storageName)
+    {
+        try
+        {
+            Storage::disk($storageName)->delete(Storage::disk($storageName)->allFiles());
+            foreach (Storage::disk($storageName)->allDirectories() as $directory){
+                Storage::disk($storageName)->deleteDirectory($directory);
+            }
+            return true;
+        }catch (Exception $exception){
+            Log::info($exception);
+            return false;
+        }
+    }
+}
+
 
 

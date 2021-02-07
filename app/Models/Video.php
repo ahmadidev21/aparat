@@ -31,6 +31,7 @@ class Video extends Model
         'banner',
         'enable_comments',
         'publish_at',
+        'state'
     ];
     //endregion model config
 

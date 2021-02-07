@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Tag;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Artisan;
 
 class DatabaseSeeder extends Seeder
 {
@@ -23,5 +24,8 @@ class DatabaseSeeder extends Seeder
         $this->call(PassportClientSeeder::class);
         $this->call(PlaylistsTableSeeder::class);
         Schema::enableForeignKeyConstraints();
+
+        Artisan::call('aparat:clear');
+        $this->command->info('clear all aparat temporary files');
     }
 }

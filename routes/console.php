@@ -1,8 +1,7 @@
 <?php
 
-use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
-
+use Illuminate\Support\Facades\Storage;
 /*
 |--------------------------------------------------------------------------
 | Console Routes
@@ -14,6 +13,11 @@ use Illuminate\Support\Facades\Artisan;
 |
 */
 
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote');
+Artisan::command('aparat:clear', function () {
+    clear_storage('videos');
+    $this->info('Clear Uploaded Videos Files');
+    clear_storage('category');
+    $this->info('Clear Uploaded Categories Files');
+    clear_storage('channels');
+    $this->info('Clear Uploaded Channels Files');
+})->purpose('Clear all temporary files and folders');

@@ -7,6 +7,7 @@ use App\Models\Channel;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\Channel\updateSocialRequest;
 use App\Http\Requests\Channel\UpdateChannelRequest;
@@ -56,18 +57,22 @@ class ChannelController extends Controller
         try {
             $banner = $request->file('banner');
             $fileName = auth()->id() . '-' . Str::random(15);
-            $banner->move(public_path('channel-banner'), $fileName);
+            Storage::disk('channels')->put($fileName, $banner->get());
             $channel = auth()->user()->channel;
+
             if ($channel->banner) {
-                unlink(public_path($channel->banner));
+                $delFileName = Str::after($channel->banner, 'channels\\');
+                Storage::disk('channels')->delete($delFileName);
             }
-            $channel->banner = 'channel-banner/' . $fileName;
+
+            $channel->banner = Storage::disk('channels')->path($fileName);
             $channel->save();
 
             return response([
-                'banner' => url('channel-banner/' . $fileName),
+                'banner' => Storage::disk('channels')->url($fileName),
             ], Response::HTTP_OK);
         } catch (Exception $exception) {
+            dd($exception);
             Log::info($exception);
 
             return response(['message' => 'خطایی در سمت سرور رخ داده است.'], Response::HTTP_INTERNAL_SERVER_ERROR);

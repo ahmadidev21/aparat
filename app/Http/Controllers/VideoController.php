@@ -86,6 +86,7 @@ class VideoController extends Controller
                 'banner' => null,
                 'enable_comments' => $request->enable_comments,
                 'publish_at' => $request->publish_at,
+                'state'=>Video::STATE_PENDING
             ]);
 
             $video->slug = uniqid($video->id);
