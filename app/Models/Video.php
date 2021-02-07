@@ -13,7 +13,7 @@ class Video extends Model
     const STATE_PENDING = 'pending';
     const STATE_CONVERTED = 'converted';
     const STATE_ACCEPTED = 'accepted';
-    const STATE_BLOCKED = 'bloked';
+    const STATE_BLOCKED = 'blocked';
     const STATES = [self::STATE_PENDING, self::STATE_CONVERTED, self::STATE_ACCEPTED, self::STATE_BLOCKED];
     //endregion state
 
@@ -46,4 +46,11 @@ class Video extends Model
         return $this->belongsToMany(Playlist::class, 'playlist_videos');
     }
     //endregion relation
+
+    //region override method
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+    //endregion override method
 }
