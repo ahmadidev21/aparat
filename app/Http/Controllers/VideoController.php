@@ -26,7 +26,7 @@ class VideoController extends Controller
 {
     public function index()
     {
-        $videos = auth()->user()->videos()->paginate(2);
+        $videos = auth()->user()->videos()->paginate(20);
 
         return response([$videos], Response::HTTP_OK);
     }
