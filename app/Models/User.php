@@ -109,17 +109,21 @@ class User extends Authenticatable
 
     public function channelVideos()
     {
-        return $this->hasMany(Video::class);
+        return $this->hasMany(Video::class)->selectRaw('*,0 as republished');
     }
 
     public function republishVideos()
     {
-        return $this->hasManyThrough(Video::class, VideoRepublish::class, 'user_id', 'id', 'id', 'video_id');
+        return $this->hasManyThrough(Video::class,
+            VideoRepublish::class,
+            'user_id', 'id',
+            'id',
+            'video_id')->selectRaw('videos.*, 1 as republished');
     }
 
     public function videos()
     {
-        return $this->channelVideos()->union($this->republishVideos()->selectRaw('videos.*'));
+        return $this->channelVideos()->union($this->republishVideos());
     }
 
     //endregion relation
