@@ -47,6 +47,8 @@ Route::group(['middleware'=>['auth:api'], 'prefix'=>'/video'], function (){
     Route::post('/upload-banner', [VideoController::class, 'uploadBanner'])->name('video.upload-banner');
     Route::post('/', [VideoController::class, 'createVideo'])->name('video.create');
     Route::put('/{video}/state', [VideoController::class, 'changeState'])->name('video.change-state');
+    Route::get('/', [VideoController::class, 'index'])->name('video.list-videos');
+    Route::post('/{video}/republish',[VideoController::class, 'republish'])->name('video.republish');
 });
 
 /**

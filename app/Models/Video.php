@@ -45,6 +45,11 @@ class Video extends Model
     {
         return $this->belongsToMany(Playlist::class, 'playlist_videos');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
     //endregion relation
 
     //region override method

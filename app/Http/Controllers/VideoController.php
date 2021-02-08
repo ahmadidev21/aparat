@@ -7,6 +7,7 @@ use App\Models\Video;
 use App\Models\Playlist;
 use Illuminate\Support\Str;
 use FFMpeg\Format\Video\X264;
+use App\Models\VideoRepublish;
 use App\Events\UploadeNewVideo;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -16,12 +17,20 @@ use Symfony\Component\HttpFoundation\Response;
 use ProtoneMedia\LaravelFFMpeg\Support\FFMpeg;
 use App\Http\Requests\Video\UploadVideoRequest;
 use App\Http\Requests\Video\CreateVideoRequest;
+use App\Http\Requests\Video\RepublishVideoRequest;
 use App\Http\Requests\Video\ChangeStateVideoRequest;
 use App\Http\Requests\Video\UploadVideoBannerRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class VideoController extends Controller
 {
+    public function index()
+    {
+        $videos = auth()->user()->videos()->paginate(2);
+
+        return response([$videos], Response::HTTP_OK);
+    }
+
     /**
      * آپلود ویدیو به صورت موقت
      */
@@ -77,7 +86,7 @@ class VideoController extends Controller
                 'banner' => null,
                 'enable_comments' => $request->enable_comments,
                 'publish_at' => $request->publish_at,
-                'state'=>Video::STATE_PENDING
+                'state' => Video::STATE_PENDING,
             ]);
 
             $video->slug = uniqid($video->id);
@@ -114,11 +123,28 @@ class VideoController extends Controller
     public function changeState(ChangeStateVideoRequest $request)
     {
         $video = $request->video;
-        if(empty($video)){
+        if (empty($video)) {
             throw new ModelNotFoundException('Video Model Not found');
         }
         $video->state = $request->state;
         $video->save();
-        return response(['video'=>$video], Response::HTTP_ACCEPTED);
+
+        return response(['video' => $video], Response::HTTP_ACCEPTED);
+    }
+
+    public function republish(RepublishVideoRequest $request)
+    {
+        try {
+            VideoRepublish::create([
+                'user_id' => auth()->id(),
+                'video_id' => $request->video->id,
+            ]);
+
+            return response(['message' => 'باز نشر با موفقیت انجام شد.'], Response::HTTP_CREATED);
+        } catch (Exception $exception) {
+            Log::info($exception);
+
+            return response(['message' => 'عملیات بازنشر با خطا مواجه شد. مچددا تلاش کنید'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }

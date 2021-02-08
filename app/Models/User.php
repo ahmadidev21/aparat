@@ -107,5 +107,15 @@ class User extends Authenticatable
         return $this->hasMany(Playlist::class);
     }
 
+    public function videos()
+    {
+        return $this->hasMany(Video::class);
+    }
+
+    public function republishVideos()
+    {
+        return $this->hasManyThrough(Video::class, VideoRepublish::class, 'user_id', 'id', 'id', 'video_id');
+    }
+
     //endregion relation
 }
