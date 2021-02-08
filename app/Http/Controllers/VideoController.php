@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use FFMpeg\Filters\Video\CustomFilter;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\ListVideosRequest;
 use Symfony\Component\HttpFoundation\Response;
 use ProtoneMedia\LaravelFFMpeg\Support\FFMpeg;
 use App\Http\Requests\Video\UploadVideoRequest;
@@ -24,9 +25,15 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class VideoController extends Controller
 {
-    public function index()
+    public function index(ListVideosRequest $request)
     {
-        $videos = auth()->user()->videos()->paginate(20);
+        $user = auth()->user();
+        if($request->has('republished')){
+            $videos = $request->republished ? $user->republishVideos() : $user->channelVideos();
+        }else{
+            $videos = $user->videos();
+        }
+        $videos = $videos->orderBy('id')->paginate(20);
 
         return response([$videos], Response::HTTP_OK);
     }
