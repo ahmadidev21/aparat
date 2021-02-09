@@ -7,5 +7,5 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 class VideoFavorite extends Pivot
 {
     protected $table = 'video_favoites';
-    protected $fillable = ['user_id', 'video_id'];
+    protected $fillable = ['user_id', 'video_id', 'user_ip'];
 }

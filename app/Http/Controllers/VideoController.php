@@ -30,9 +30,9 @@ class VideoController extends Controller
     public function index(ListVideosRequest $request)
     {
         $user = auth()->user();
-        if($request->has('republished')){
+        if ($request->has('republished')) {
             $videos = $request->republished ? $user->republishVideos() : $user->channelVideos();
-        }else{
+        } else {
             $videos = $user->videos();
         }
         $videos = $videos->orderBy('id')->paginate(20);
@@ -163,25 +163,35 @@ class VideoController extends Controller
         $video = $request->video;
         $like = $request->like;
         $favorite = $user ? $user->favoriteVideos()->where('video_id', $video->id)->first() : null;
-        if(empty($favorite)){
-           if($like){
-               VideoFavorite::create([
-                   'video_id'=>$video->id,
-                   'user_id'=>$user ? $user->id : null
-               ]);
-           }else{
-               return response(['message'=>'شما قادر به انجام این کار نیستید.'], Response::HTTP_BAD_REQUEST);
-           }
-        }else{
-            if(!$like){
+        if (empty($favorite)) {
+            if ($like) {
+                $clientIp = client_ip();
+                //if anonymous user want to like so that already liked it.
+                if (! $user && VideoFavorite::where([
+                        'user_id' => null,
+                        'user_ip' => $clientIp,
+                    ])->count()) {
+                    return response(['message' => 'شما قبلا این ویدیو را پسندیده اید.'], Response::HTTP_BAD_REQUEST);
+                }
+                VideoFavorite::create([
+                    'video_id' => $video->id,
+                    'user_id' => $user ? $user->id : null,
+                    'user_ip' => $clientIp,
+                ]);
+            } else {
+                return response(['message' => 'شما قادر به انجام این کار نیستید.'], Response::HTTP_BAD_REQUEST);
+            }
+        } else {
+            if (! $like) {
                 VideoFavorite::where([
-                    'video_id'=>$video->id,
-                    'user_id'=>$user->id
+                    'video_id' => $video->id,
+                    'user_id' => $user->id,
                 ])->delete();
-            }else{
-                return response(['message'=>'شما قبلا این ویدیو را پسندیده اید.'], Response::HTTP_BAD_REQUEST);
+            } else {
+                return response(['message' => 'شما قبلا این ویدیو را پسندیده اید.'], Response::HTTP_BAD_REQUEST);
             }
         }
-        return response(['message'=>'با موفثیت ثبت شد'], Response::HTTP_CREATED);
+
+        return response(['message' => 'با موفثیت ثبت شد'], Response::HTTP_CREATED);
     }
 }
