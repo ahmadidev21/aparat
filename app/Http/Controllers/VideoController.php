@@ -7,6 +7,7 @@ use App\Models\Video;
 use App\Models\Playlist;
 use Illuminate\Support\Str;
 use FFMpeg\Format\Video\X264;
+use App\Models\VideoFavorite;
 use App\Models\VideoRepublish;
 use App\Events\UploadeNewVideo;
 use Illuminate\Support\Facades\DB;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Log;
 use FFMpeg\Filters\Video\CustomFilter;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\ListVideosRequest;
+use App\Http\Requests\Video\LikeRequest;
 use Symfony\Component\HttpFoundation\Response;
 use ProtoneMedia\LaravelFFMpeg\Support\FFMpeg;
 use App\Http\Requests\Video\UploadVideoRequest;
@@ -153,5 +155,33 @@ class VideoController extends Controller
 
             return response(['message' => 'عملیات بازنشر با خطا مواجه شد. مچددا تلاش کنید'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public function like(LikeRequest $request)
+    {
+        $user = auth('api')->user();
+        $video = $request->video;
+        $like = $request->like;
+        $favorite = $user ? $user->favoriteVideos()->where('video_id', $video->id)->first() : null;
+        if(empty($favorite)){
+           if($like){
+               VideoFavorite::create([
+                   'video_id'=>$video->id,
+                   'user_id'=>$user ? $user->id : null
+               ]);
+           }else{
+               return response(['message'=>'شما قادر به انجام این کار نیستید.'], Response::HTTP_BAD_REQUEST);
+           }
+        }else{
+            if(!$like){
+                VideoFavorite::where([
+                    'video_id'=>$video->id,
+                    'user_id'=>$user->id
+                ])->delete();
+            }else{
+                return response(['message'=>'شما قبلا این ویدیو را پسندیده اید.'], Response::HTTP_BAD_REQUEST);
+            }
+        }
+        return response(['message'=>'با موفثیت ثبت شد'], Response::HTTP_CREATED);
     }
 }

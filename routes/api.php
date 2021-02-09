@@ -42,6 +42,9 @@ Route::group(['middleware'=>['auth:api'], 'prefix'=>'/channel'], function (){
 /**
  * Rout Group for Video
  */
+Route::group(['prefix'=>'/video'], function (){
+    Route::post('/{video}/like', [VideoController::class, 'like'])->name('video.like');
+});
 Route::group(['middleware'=>['auth:api'], 'prefix'=>'/video'], function (){
     Route::post('/upload', [VideoController::class, 'uploadVideo'])->name('video.upload');
     Route::post('/upload-banner', [VideoController::class, 'uploadBanner'])->name('video.upload-banner');

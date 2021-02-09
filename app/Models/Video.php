@@ -17,6 +17,28 @@ class Video extends Model
     const STATES = [self::STATE_PENDING, self::STATE_CONVERTED, self::STATE_ACCEPTED, self::STATE_BLOCKED];
     //endregion state
 
+    //region custom method
+    public function isAccepted()
+    {
+        return $this->state === self::STATE_ACCEPTED;
+    }
+
+    public function isPengind()
+    {
+        return $this->state === self::STATE_PENDING;
+    }
+
+    public function isConverted()
+    {
+        return $this->state === self::STATE_CONVERTED;
+    }
+
+    public function isBlocked()
+    {
+        return $this->state === self::STATE_BLOCKED;
+    }
+    //endregion custom method
+
     //region model config
     protected $table = 'videos';
 

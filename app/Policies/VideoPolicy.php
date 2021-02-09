@@ -18,6 +18,13 @@ class VideoPolicy
 
     public function republish(User $user, Video $video)
     {
-        return $video && ($user->id != $video->user_id && VideoRepublish::where(['user_id'=>$user->id,'video_id'=>$video->id])->count() < 1);
+        return $video
+            && $video->isAccepted()
+            && ($user->id != $video->user_id && VideoRepublish::where(['user_id'=>$user->id,'video_id'=>$video->id])->count() < 1);
+    }
+
+    public function like(User $user=null, Video $video)
+    {
+        return $video &&($video->isAccepted($video));
     }
 }

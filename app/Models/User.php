@@ -126,5 +126,10 @@ class User extends Authenticatable
         return $this->channelVideos()->union($this->republishVideos());
     }
 
+    public function favoriteVideos()
+    {
+        return $this->hasManyThrough(Video::class, VideoFavorite::class, 'user_id', 'id', 'id','video_id');
+    }
+
     //endregion relation
 }
