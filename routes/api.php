@@ -42,16 +42,17 @@ Route::group(['middleware'=>['auth:api'], 'prefix'=>'/channel'], function (){
 /**
  * Rout Group for Video
  */
-Route::group(['prefix'=>'/video'], function (){
+Route::group(['middleware'=>[], 'prefix'=>'/video'], function (){
     Route::post('/{video}/like', [VideoController::class, 'like'])->name('video.like');
-});
-Route::group(['middleware'=>['auth:api'], 'prefix'=>'/video'], function (){
-    Route::post('/upload', [VideoController::class, 'uploadVideo'])->name('video.upload');
-    Route::post('/upload-banner', [VideoController::class, 'uploadBanner'])->name('video.upload-banner');
-    Route::post('/', [VideoController::class, 'createVideo'])->name('video.create');
-    Route::put('/{video}/state', [VideoController::class, 'changeState'])->name('video.change-state');
     Route::get('/', [VideoController::class, 'index'])->name('video.list-videos');
-    Route::post('/{video}/republish',[VideoController::class, 'republish'])->name('video.republish');
+
+    Route::group(['middleware'=>['auth:api']], function (){
+        Route::post('/upload', [VideoController::class, 'uploadVideo'])->name('video.upload');
+        Route::post('/upload-banner', [VideoController::class, 'uploadBanner'])->name('video.upload-banner');
+        Route::post('/', [VideoController::class, 'createVideo'])->name('video.create');
+        Route::put('/{video}/state', [VideoController::class, 'changeState'])->name('video.change-state');
+        Route::post('/{video}/republish',[VideoController::class, 'republish'])->name('video.republish');
+    });
 });
 
 /**

@@ -37,6 +37,8 @@ class Video extends Model
     {
         return $this->state === self::STATE_BLOCKED;
     }
+
+
     //endregion custom method
 
     //region model config
@@ -79,5 +81,32 @@ class Video extends Model
     {
         return 'slug';
     }
+
+//    public function toArray()
+//    {
+//        $data = parent::toArray();
+//        $condition = [
+//            'video_id'=>$this->id,
+//            'user_id'=> auth('api')->check() ? auth('api')->id() : null
+//        ];
+//        if(!auth('api')->check()){
+//            $condition['user_ip'] = client_ip();
+//        }
+//        $data['like'] = VideoFavorite::query()->where($condition)->count();
+//
+//        return $data;
+//    }
     //endregion override method
+
+    //region custom static method
+    public static function whereNotRepublished()
+    {
+        return Video::whereRaw('id not in(select video_id from video_republishes)');
+    }
+
+    public static function whereRepublished()
+    {
+        return Video::whereRaw('id in(select video_id from video_republishes)');
+    }
+    //endregion custom static method
 }

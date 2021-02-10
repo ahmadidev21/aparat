@@ -29,11 +29,16 @@ class VideoController extends Controller
 {
     public function index(ListVideosRequest $request)
     {
-        $user = auth()->user();
+        $user = auth('api')->user();
         if ($request->has('republished')) {
-            $videos = $request->republished ? $user->republishVideos() : $user->channelVideos();
+            if($user){
+
+                $videos = $request->republished ? $user->republishVideos() : $user->channelVideos();
+            }else{
+                $videos = $request->republished? Video::whereRepublished() : Video::whereNotRepublished();
+            }
         } else {
-            $videos = $user->videos();
+            $videos = $user ? $user->videos() : Video::query();
         }
         $videos = $videos->orderBy('id')->paginate(20);
 
@@ -170,6 +175,7 @@ class VideoController extends Controller
                 if (! $user && VideoFavorite::where([
                         'user_id' => null,
                         'user_ip' => $clientIp,
+                        'video_id'=>$video->id
                     ])->count()) {
                     return response(['message' => 'شما قبلا این ویدیو را پسندیده اید.'], Response::HTTP_BAD_REQUEST);
                 }
