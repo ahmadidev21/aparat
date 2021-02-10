@@ -18,7 +18,9 @@ class UsersTableSeeder extends Seeder
             User::query()->truncate();
         }
         $this->createAdminUser();
-        $this->createUser();
+        for ($i=1 ; $i<5 ; $i++){
+            $this->createUser($i);
+        }
     }
 
     private function createAdminUser()
@@ -27,20 +29,20 @@ class UsersTableSeeder extends Seeder
             'type'=>User::TYPE_ADMIN,
             'name'=>'مدیر اصلی',
             'email'=> 'admin@yahoo.com',
-            'mobile'=>'+989111111111'
+            'mobile'=>'+989000000000'
         ]);
 
         $this->command->info('کاربر ادمین اصلی سایت ایجاد شد.');
     }
 
-    private function createUser()
+    private function createUser($num)
     {
         User::factory()->create([
-            'name'=>'کاربر1',
-            'email'=>'user@yahoo.com',
-            'mobile'=>'+989222222222',
+            'name'=>'کاربر'.$num,
+            'email'=>'user'.$num.'@yahoo.com',
+            'mobile'=>'+989'.str_repeat($num, 9),
         ]);
 
-        $this->command->info('یک کاربر پیش فرض به سیستم اضافه شد.');
+        $this->command->info('به سیستم اضافه شد.'.$num. 'کاربر');
     }
 }
