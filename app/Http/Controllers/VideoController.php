@@ -210,8 +210,8 @@ class VideoController extends Controller
             : response(['message'=>'شما قادر به انجام این کار نیستید'], Response::HTTP_BAD_REQUEST);
     }
 
-//    public function likedByCurrentUser(LikedByCurrentUser $request)
-//    {
-//        return $request->user()->favoriteVideos()->paginate();
-//    }
+    public function likedByCurrentUser(LikedByCurrentUser $request)
+    {
+        return $request->user()->favoriteVideos()->paginate();
+    }
 }

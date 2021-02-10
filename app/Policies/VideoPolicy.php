@@ -22,9 +22,15 @@ class VideoPolicy
             && $video->isAccepted()
             && ($user->id != $video->user_id && VideoRepublish::where(['user_id'=>$user->id,'video_id'=>$video->id])->count() < 1);
     }
-
+    // if user is anonymous must $user is null by default
     public function like(User $user=null, Video $video)
     {
         return $video &&($video->isAccepted($video));
+    }
+
+    // if video::class pass in allows $video is null by default
+    public function seeLikedVideos(User $user, Video $video=null)
+    {
+        return true;
     }
 }
