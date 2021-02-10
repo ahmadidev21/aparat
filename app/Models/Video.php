@@ -82,20 +82,20 @@ class Video extends Model
         return 'slug';
     }
 
-//    public function toArray()
-//    {
-//        $data = parent::toArray();
-//        $condition = [
-//            'video_id'=>$this->id,
-//            'user_id'=> auth('api')->check() ? auth('api')->id() : null
-//        ];
-//        if(!auth('api')->check()){
-//            $condition['user_ip'] = client_ip();
-//        }
-//        $data['like'] = VideoFavorite::query()->where($condition)->count();
-//
-//        return $data;
-//    }
+    public function toArray()
+    {
+        $data = parent::toArray();
+        $condition = [
+            'video_id'=>$this->id,
+            'user_id'=> auth('api')->check() ? auth('api')->id() : null
+        ];
+        if(!auth('api')->check()){
+            $condition['user_ip'] = client_ip();
+        }
+        $data['like'] = VideoFavorite::query()->where($condition)->count();
+
+        return $data;
+    }
     //endregion override method
 
     //region custom static method

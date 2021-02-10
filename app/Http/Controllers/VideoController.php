@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 use ProtoneMedia\LaravelFFMpeg\Support\FFMpeg;
 use App\Http\Requests\Video\UploadVideoRequest;
 use App\Http\Requests\Video\CreateVideoRequest;
+use App\Http\Requests\Video\LikedByCurrentUser;
 use App\Http\Requests\Video\RepublishVideoRequest;
 use App\Http\Requests\Video\ChangeStateVideoRequest;
 use App\Http\Requests\Video\UploadVideoBannerRequest;
@@ -167,37 +168,50 @@ class VideoController extends Controller
         $user = auth('api')->user();
         $video = $request->video;
         $like = $request->like;
-        $favorite = $user ? $user->favoriteVideos()->where('video_id', $video->id)->first() : null;
-        if (empty($favorite)) {
-            if ($like) {
-                $clientIp = client_ip();
-                //if anonymous user want to like so that already liked it.
-                if (! $user && VideoFavorite::where([
-                        'user_id' => null,
-                        'user_ip' => $clientIp,
-                        'video_id'=>$video->id
-                    ])->count()) {
-                    return response(['message' => 'شما قبلا این ویدیو را پسندیده اید.'], Response::HTTP_BAD_REQUEST);
-                }
-                VideoFavorite::create([
-                    'video_id' => $video->id,
-                    'user_id' => $user ? $user->id : null,
-                    'user_ip' => $clientIp,
-                ]);
-            } else {
-                return response(['message' => 'شما قادر به انجام این کار نیستید.'], Response::HTTP_BAD_REQUEST);
+        $clientIp = client_ip();
+
+        if($user){
+            $favorite = $user->favoriteVideos()->where('video_id', $video->id)->first();
+            if($like){
+                $result = $favorite
+                    ? false
+                    : VideoFavorite::create([
+                        'user_id'=>$user->id,
+                        'video_id'=>$video->id,
+                        'user_ip'=>$clientIp
+                    ]);
+            }else{
+                $result = $favorite
+                    ? VideoFavorite::where([
+                        'user_id'=>$user->id,
+                        'video_id'=>$video->id,
+                    ])->delete()
+                    : false;
             }
-        } else {
-            if (! $like) {
-                VideoFavorite::where([
-                    'video_id' => $video->id,
-                    'user_id' => $user->id,
-                ])->delete();
-            } else {
-                return response(['message' => 'شما قبلا این ویدیو را پسندیده اید.'], Response::HTTP_BAD_REQUEST);
+
+        }else{
+            $favorite = VideoFavorite::where(['video_id'=>$video->id, 'user_id'=>null, 'user_ip'=>$clientIp])->first();
+            if($like){
+                $result = $favorite
+                    ? false
+                    :VideoFavorite::create([
+                        'user_id'=>null,
+                        'video_id'=>$video->id,
+                        'user_ip'=>$clientIp
+                    ]);
+            }else{
+                $result = $favorite ? $favorite->delete() : false;
             }
+
         }
 
-        return response(['message' => 'با موفثیت ثبت شد'], Response::HTTP_CREATED);
+        return $result
+            ? response(['message'=>'با موفثیت ثبت شد '], Response::HTTP_OK)
+            : response(['message'=>'شما قادر به انجام این کار نیستید'], Response::HTTP_BAD_REQUEST);
     }
+
+//    public function likedByCurrentUser(LikedByCurrentUser $request)
+//    {
+//        return $request->user()->favoriteVideos()->paginate();
+//    }
 }
