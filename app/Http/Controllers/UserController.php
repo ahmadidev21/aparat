@@ -10,6 +10,7 @@ use App\Http\Requests\User\ChangeEmialRequest;
 use Symfony\Component\HttpFoundation\Response;
 use Exception;
 use App\Http\Requests\User\ChangePasswordRequest;
+use App\Http\Requests\Channel\FollowChannelRequest;
 use App\Http\Requests\User\ChangeEmailSubmitRequest;
 
 class UserController extends Controller
@@ -86,5 +87,13 @@ class UserController extends Controller
             return response(['message'=>'خطایی در سمت سرور رخ داده است.'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
+    }
+
+    public function follow(FollowChannelRequest $request)
+    {
+        $user = $request->user();
+        $user->follow($request->channel->user);
+
+        return response(['message'=>'با موفقیت انجام شد'], Response::HTTP_CREATED);
     }
 }

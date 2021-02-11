@@ -28,6 +28,13 @@ class Channel extends Model
         return $this->belongsTo(User::class);
     }
 
+    //region override method
+    public function getRouteKeyName()
+    {
+        return 'name';
+    }
+    //endregion override method
+
     /**
      * we replace $cats['socials']='json' with bellow code
      */

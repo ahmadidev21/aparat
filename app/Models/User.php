@@ -82,6 +82,15 @@ class User extends Authenticatable
         return $this->type === User::TYPE_USER;
     }
 
+    public function follow(User $user)
+    {
+        return Follow::create([
+            'user_id1'=>$this->id,
+            'user_id2'=>$user->id
+        ]);
+    }
+
+
     //endregion custom method
 
     //region setter
@@ -129,6 +138,13 @@ class User extends Authenticatable
     public function favoriteVideos()
     {
         return $this->hasManyThrough(Video::class, VideoFavorite::class, 'user_id', 'id', 'id','video_id');
+    }
+
+    public function followings()
+    {
+        return $this->hasManyThrough(User::class,
+            Follow::class,
+            'user_id1', 'id', 'id', 'user_id2');
     }
 
     //endregion relation

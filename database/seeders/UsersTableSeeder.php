@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Channel;
 use Illuminate\Database\Seeder;
 
 class UsersTableSeeder extends Seeder
@@ -15,6 +16,7 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
         if(User::query()->count()){
+            Channel::query()->truncate();
             User::query()->truncate();
         }
         $this->createAdminUser();

@@ -2,11 +2,10 @@
 
 namespace App\Http\Requests\Channel;
 
-use App\Models\User;
-use App\Rules\ChannelName;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateChannelRequest extends FormRequest
+class FollowChannelRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -15,10 +14,7 @@ class UpdateChannelRequest extends FormRequest
      */
     public function authorize()
     {
-        if($this->route()->hasParameter('id') && auth()->user()->type != User::TYPE_ADMIN){
-            return false;
-        }
-        return true;
+        return Gate::allows('follow', $this->channel->user);
     }
 
     /**
@@ -29,9 +25,7 @@ class UpdateChannelRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'=>['required', new ChannelName()],
-            'website'=>'nullable|url|max:255',
-            'info'=>'nullable|string'
+            //
         ];
     }
 }
