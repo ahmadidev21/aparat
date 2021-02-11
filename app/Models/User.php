@@ -154,5 +154,11 @@ class User extends Authenticatable
             'user_id1', 'id', 'id', 'user_id2');
     }
 
+    public function followers()
+    {
+        return $this->hasManyThrough(User::class, Follow::class,
+            'user_id2', 'id', 'id', 'user_id1');
+    }
+
     //endregion relation
 }

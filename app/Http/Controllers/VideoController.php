@@ -19,6 +19,8 @@ use App\Http\Requests\Video\ListVideosRequest;
 use App\Http\Requests\Video\UploadVideoRequest;
 use App\Http\Requests\Video\CreateVideoRequest;
 use App\Http\Requests\Video\LikedByCurrentUser;
+use App\Http\Requests\User\FollowersUserRequest;
+use App\Http\Requests\User\FollowingsUserRequest;
 use App\Http\Requests\Video\RepublishVideoRequest;
 use App\Http\Requests\Video\ChangeStateVideoRequest;
 use App\Http\Requests\Video\UploadVideoBannerRequest;
@@ -192,4 +194,6 @@ class VideoController extends Controller
     {
         return $request->user()->favoriteVideos()->paginate();
     }
+
+
 }

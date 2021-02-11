@@ -52,7 +52,7 @@ class VideoPolicy
             if(empty($user)){
                 $condition['user_ip']= client_ip();
             }
-            
+
             return VideoFavorite::query()->where($condition)->count();
         }
 

@@ -28,4 +28,14 @@ class UserPolicy
     {
         return ($user->id != $otherUser->id) && ($user->followings()->where('user_id2', $otherUser->id)->count());
     }
+
+    public function seeFollowingList(User $user, User $otherUser=null)
+    {
+        return true;
+    }
+
+    public function seeFollowerList(User $user, User $otherUser=null)
+    {
+        return true;
+    }
 }

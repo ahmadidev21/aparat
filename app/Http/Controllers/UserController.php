@@ -9,7 +9,9 @@ use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\User\ChangeEmialRequest;
 use Symfony\Component\HttpFoundation\Response;
 use Exception;
+use App\Http\Requests\User\FollowersUserRequest;
 use App\Http\Requests\User\ChangePasswordRequest;
+use App\Http\Requests\User\FollowingsUserRequest;
 use App\Http\Requests\User\UnFollowChannelRequest;
 use App\Http\Requests\Channel\FollowChannelRequest;
 use App\Http\Requests\User\ChangeEmailSubmitRequest;
@@ -104,5 +106,15 @@ class UserController extends Controller
         $user->unFollow($request->channel->user);
 
         return response(['message'=>'با موفقیت انجام شد'], Response::HTTP_OK);
+    }
+
+    public function followings(FollowingsUserRequest $request)
+    {
+        return $request->user()->followings()->paginate();
+    }
+
+    public function followers(FollowersUserRequest $request)
+    {
+        return $request->user()->followers()->paginate();
     }
 }

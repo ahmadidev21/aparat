@@ -41,6 +41,8 @@ Route::group(['middleware'=>['auth:api']], function (){
     Route::group(['prefix'=>'/user'], function (){
         Route::match(['post', 'get'],'{channel}/follow',[UserController::class, 'follow'])->name('user.follow');
         Route::match(['post', 'get'],'{channel}/unfollow',[UserController::class, 'unFollow'])->name('user.unfollow');
+        Route::get('followings', [UserController::class, 'followings'])->name('user.following');
+        Route::get('followers', [UserController::class, 'followers'])->name('user.followers');
     });
 });
 
