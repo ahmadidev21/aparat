@@ -40,8 +40,8 @@ Route::group(['middleware'=>['auth:api']], function (){
     Route::match(['post', 'put'], 'change-password', [UserController::class, 'changePassword'])->name('user.change-password');
     Route::group(['prefix'=>'/user'], function (){
         Route::match(['post', 'get'],'{channel}/follow',[UserController::class, 'follow'])->name('user.follow');
+        Route::match(['post', 'get'],'{channel}/unfollow',[UserController::class, 'unFollow'])->name('user.unfollow');
     });
-
 });
 
 /**

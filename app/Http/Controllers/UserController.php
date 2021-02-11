@@ -10,6 +10,7 @@ use App\Http\Requests\User\ChangeEmialRequest;
 use Symfony\Component\HttpFoundation\Response;
 use Exception;
 use App\Http\Requests\User\ChangePasswordRequest;
+use App\Http\Requests\User\UnFollowChannelRequest;
 use App\Http\Requests\Channel\FollowChannelRequest;
 use App\Http\Requests\User\ChangeEmailSubmitRequest;
 
@@ -95,5 +96,13 @@ class UserController extends Controller
         $user->follow($request->channel->user);
 
         return response(['message'=>'با موفقیت انجام شد'], Response::HTTP_CREATED);
+    }
+
+    public function unFollow(UnFollowChannelRequest $request)
+    {
+        $user = $request->user();
+        $user->unFollow($request->channel->user);
+
+        return response(['message'=>'با موفقیت انجام شد'], Response::HTTP_OK);
     }
 }

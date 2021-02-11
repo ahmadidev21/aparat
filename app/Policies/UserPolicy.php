@@ -23,4 +23,9 @@ class UserPolicy
     {
         return ($user->id != $otherUser->id) && (!$user->followings()->where('user_id2', $otherUser->id)->count());
     }
+
+    public function unFollow(User $user, User $otherUser)
+    {
+        return ($user->id != $otherUser->id) && ($user->followings()->where('user_id2', $otherUser->id)->count());
+    }
 }
