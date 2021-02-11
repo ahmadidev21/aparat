@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Video\LikeRequest;
+use App\Http\Requests\Video\unLikeRequest;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\Video\ListVideosRequest;
 use App\Http\Requests\Video\UploadVideoRequest;
@@ -162,49 +163,29 @@ class VideoController extends Controller
 
     public function like(LikeRequest $request)
     {
+        VideoFavorite::create([
+            'video_id'=>$request->video->id,
+            'user_id'=> auth('api')->id(),
+            'user_ip'=>client_ip()
+        ]);
+
+        return response(['message'=>'با موفثیت ثبت شد '], Response::HTTP_OK);
+    }
+
+    public function unLike(unLikeRequest $request)
+    {
         $user = auth('api')->user();
-        $video = $request->video;
-        $like = $request->like;
-        $clientIp = client_ip();
-
-        if($user){
-            $favorite = $user->favoriteVideos()->where('video_id', $video->id)->first();
-            if($like){
-                $result = $favorite
-                    ? false
-                    : VideoFavorite::create([
-                        'user_id'=>$user->id,
-                        'video_id'=>$video->id,
-                        'user_ip'=>$clientIp
-                    ]);
-            }else{
-                $result = $favorite
-                    ? VideoFavorite::where([
-                        'user_id'=>$user->id,
-                        'video_id'=>$video->id,
-                    ])->delete()
-                    : false;
-            }
-
-        }else{
-            $favorite = VideoFavorite::where(['video_id'=>$video->id, 'user_id'=>null, 'user_ip'=>$clientIp])->first();
-            if($like){
-                $result = $favorite
-                    ? false
-                    :VideoFavorite::create([
-                        'user_id'=>null,
-                        'video_id'=>$video->id,
-                        'user_ip'=>$clientIp
-                    ]);
-            }else{
-                $result = $favorite ? $favorite->delete() : false;
-            }
-
+        $condition = [
+            'video_id'=>$request->video->id,
+            'user_id'=>$user ? $user->id : null
+        ];
+        if(empty($user)){
+            $condition['user_ip'] = client_ip();
         }
 
-        return $result
-            ? response(['message'=>'با موفثیت ثبت شد '], Response::HTTP_OK)
-            : response(['message'=>'شما قادر به انجام این کار نیستید'], Response::HTTP_BAD_REQUEST);
+        VideoFavorite::query()->where($condition)->delete();
+
+        return response(['message'=>'با موفثیت ثبت شد '], Response::HTTP_OK);
     }
 
     public function likedByCurrentUser(LikedByCurrentUser $request)

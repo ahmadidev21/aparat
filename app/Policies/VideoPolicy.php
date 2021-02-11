@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\User;
 use App\Models\Video;
+use App\Models\VideoFavorite;
 use App\Models\VideoRepublish;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -25,7 +26,37 @@ class VideoPolicy
     // if user is anonymous must $user is null by default
     public function like(User $user=null, Video $video)
     {
-        return $video &&($video->isAccepted($video));
+        if($video && $video->isAccepted($video)){
+            $condition = [
+                'video_id'=>$video->id,
+                'user_id'=>$user ? $user->id: null
+            ];
+            if(empty($user)){
+                $condition['user_ip'] = client_ip();
+            }
+
+            return VideoFavorite::query()->where($condition)->count() == 0;
+        }
+
+        return false;
+    }
+
+    public function unLike(User $user=null, Video $video)
+    {
+        if($video && $video->isAccepted()){
+            $condition = [
+                'video_id'=>$video->id,
+                'user_id'=> $user ? $user->id : null
+            ];
+
+            if(empty($user)){
+                $condition['user_ip']= client_ip();
+            }
+            
+            return VideoFavorite::query()->where($condition)->count();
+        }
+
+        return false;
     }
 
     // if video::class pass in allows $video is null by default

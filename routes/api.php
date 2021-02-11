@@ -59,6 +59,7 @@ Route::group(['middleware'=>['auth:api'], 'prefix'=>'/channel'], function (){
  */
 Route::group(['middleware'=>[], 'prefix'=>'/video'], function (){
     Route::post('/{video}/like', [VideoController::class, 'like'])->name('video.like');
+    Route::post('/{video}/unLike', [VideoController::class, 'unLike'])->name('video.unLike');
     Route::get('/', [VideoController::class, 'index'])->name('video.list-videos');
 
     Route::group(['middleware'=>['auth:api']], function (){
@@ -68,6 +69,7 @@ Route::group(['middleware'=>[], 'prefix'=>'/video'], function (){
         Route::put('/{video}/state', [VideoController::class, 'changeState'])->name('video.change-state');
         Route::post('/{video}/republish',[VideoController::class, 'republish'])->name('video.republish');
         Route::get('liked', [VideoController::class, 'likedByCurrentUser'])->name('video.liked');
+
     });
 });
 
