@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use App\Models\Video;
 use App\Models\Channel;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
@@ -100,4 +101,26 @@ class ChannelController extends Controller
         }
     }
 
+    public function statistics()
+    {
+        $data = [
+            'views'=>[],
+            'total_views'=>0,
+            'total_followers'=>auth('api')->user()->followers()->count(),
+            'total_videos'=>auth('api')->user()->channelVideos()->count(),
+            'total_comments'=>Video::channelComments(auth('api')->id())
+                ->selectRaw('comments.*')
+                ->count() //TODO: addition unaccepted comments
+        ];
+
+        Video::views(auth('api')->id())
+            ->selectRaw('date(video_views.created_at) as date, count(*) as views')
+            ->groupByRaw('date(video_views.created_at)')->get()->each(function ($item)use (&$data){
+                $data['views'][$item->date] = $item->views;
+                $data['total_views'] += $item->views;
+            });
+
+        return $data;
+
+    }
 }

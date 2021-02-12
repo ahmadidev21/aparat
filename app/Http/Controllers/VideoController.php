@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Exception;
 use App\Models\Video;
 use App\Models\Playlist;
+use App\Events\VisitVideo;
 use Illuminate\Support\Str;
 use App\Models\VideoFavorite;
 use App\Models\VideoRepublish;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Video\LikeRequest;
 use App\Http\Requests\Video\unLikeRequest;
+use App\Http\Requests\Video\ShowVideoRequest;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\Video\ListVideosRequest;
 use App\Http\Requests\Video\UploadVideoRequest;
@@ -193,6 +195,12 @@ class VideoController extends Controller
     public function likedByCurrentUser(LikedByCurrentUser $request)
     {
         return $request->user()->favoriteVideos()->paginate();
+    }
+
+    public function show(ShowVideoRequest $request)
+    {
+        event(new VisitVideo($request->video));
+        return $request->video;
     }
 
 

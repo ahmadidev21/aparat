@@ -17,6 +17,7 @@ class CreateVideoViewsTable extends Migration
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained('users', 'id')->onDelete('SET NULL')->onUpdate('CASCADE');
             $table->foreignId('video_id')->constrained('videos', 'id')->onDelete('CASCADE')->onUpdate('CASCADE');
+            $table->string('user_ip', 100);
             $table->timestamps();
         });
     }

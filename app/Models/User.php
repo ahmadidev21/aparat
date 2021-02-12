@@ -160,5 +160,15 @@ class User extends Authenticatable
             'user_id2', 'id', 'id', 'user_id1');
     }
 
+    public function views()
+    {
+        return $this->belongsToMany(Video::class, 'video_views')->withTimestamps();
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
     //endregion relation
 }

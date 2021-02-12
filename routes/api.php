@@ -53,6 +53,7 @@ Route::group(['middleware'=>['auth:api'], 'prefix'=>'/channel'], function (){
     Route::match(['post', 'put'],'upload', [ChannelController::class, 'uploadAvatarForChannel'])->name('channel.upload-avatar');
     Route::match(['post', 'put'],'socials', [ChannelController::class, 'updateSocials'])->name('channel.update-socials');
     Route::put('{id?}', [ChannelController::class, 'updateChannelInfo'])->name('channel.update');
+    Route::get('statistics', [ChannelController::class, 'statistics'])->name('channel.statistics');
 
 });
 
@@ -63,6 +64,7 @@ Route::group(['middleware'=>[], 'prefix'=>'/video'], function (){
     Route::post('/{video}/like', [VideoController::class, 'like'])->name('video.like');
     Route::post('/{video}/unLike', [VideoController::class, 'unLike'])->name('video.unLike');
     Route::get('/', [VideoController::class, 'index'])->name('video.list-videos');
+    Route::get('/{video}', [VideoController::class, 'show'])->name('video.show');
 
     Route::group(['middleware'=>['auth:api']], function (){
         Route::post('/upload', [VideoController::class, 'uploadVideo'])->name('video.upload');

@@ -74,6 +74,16 @@ class Video extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function viewers()
+    {
+        return $this->belongsToMany(User::class, 'video_views')->withTimestamps();
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
     //endregion relation
 
     //region override method
@@ -107,6 +117,18 @@ class Video extends Model
     public static function whereRepublished()
     {
         return Video::whereRaw('id in(select video_id from video_republishes)');
+    }
+
+    public static function views($userId){
+        //TODO: anonymous user view
+        return static::query()->where('videos.user_id',$userId)
+            ->join('video_views', 'video_views.video_id', '=','videos.id');
+    }
+
+    public static function channelComments($userId){
+
+        return static::query()->join('comments', 'comments.video_id', '=','videos.id')
+            ->where('videos.user_id',$userId);
     }
     //endregion custom static method
 }
