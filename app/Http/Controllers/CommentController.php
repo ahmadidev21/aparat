@@ -7,6 +7,7 @@ use App\Models\Comment;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\Comment\ListCommentRequest;
 use App\Http\Requests\Comment\CreateCommentRequest;
+use App\Http\Requests\Comment\DeleteCommentRequest;
 use App\Http\Requests\Comment\ChangeStateCommentRequest;
 
 class CommentController extends Controller
@@ -43,5 +44,12 @@ class CommentController extends Controller
         $comment->save();
 
         return response(['message'=>'وضعیت با موفقیت تغییر یافت.'], Response::HTTP_ACCEPTED);
+    }
+
+    public function delete(DeleteCommentRequest $request)
+    {
+        $request->comment->delete();
+
+        return response(['message'=>'حذف دیدگاه با موفقیت انجام شد.'], Response::HTTP_OK);
     }
 }

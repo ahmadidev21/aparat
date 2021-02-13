@@ -18,6 +18,7 @@ class CreatePlaylistsTable extends Migration
             $table->foreignId('user_id')->constrained('users', 'id')->onDelete('CASCADE')->onUpdate('CASCADE');
             $table->string('title', 200);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

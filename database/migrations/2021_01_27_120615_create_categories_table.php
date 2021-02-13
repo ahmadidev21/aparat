@@ -20,6 +20,7 @@ class CreateCategoriesTable extends Migration
             $table->string('icon', 50)->nullable();
             $table->string('banner')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

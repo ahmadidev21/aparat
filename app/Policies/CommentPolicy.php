@@ -29,4 +29,9 @@ class CommentPolicy
             ($comment->state === Comment::STATE_READ && $state === Comment::STATE_ACCEPTED)
         ) && $user->channelVideos()->where('id', $comment->video_id)->count();
     }
+
+    public function delete(User $user , Comment $comment)
+    {
+        return $user->channelVideos()->where('id', $comment->video_id)->count();
+    }
 }

@@ -22,6 +22,7 @@ class CreateCommentsTable extends Migration
             $table->text('body');
             $table->enum('state',Comment::STATES)->default(Comment::STATE_PENDING);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -28,6 +28,7 @@ class CreateVideosTable extends Migration
             $table->timestamp('publish_at')->nullable();
             $table->enum('state',Video::STATES)->default(Video::STATE_PENDING);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
