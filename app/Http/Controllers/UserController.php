@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Exception;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\User\ChangeEmialRequest;
 use Symfony\Component\HttpFoundation\Response;
-use Exception;
 use App\Http\Requests\User\FollowersUserRequest;
 use App\Http\Requests\User\ChangePasswordRequest;
 use App\Http\Requests\User\FollowingsUserRequest;
+use App\Http\Requests\User\UnregisterUserRequest;
 use App\Http\Requests\User\UnFollowChannelRequest;
 use App\Http\Requests\Channel\FollowChannelRequest;
 use App\Http\Requests\User\ChangeEmailSubmitRequest;
@@ -116,5 +117,21 @@ class UserController extends Controller
     public function followers(FollowersUserRequest $request)
     {
         return $request->user()->followers()->paginate();
+    }
+
+    public function unRegister(UnregisterUserRequest $request)
+    {
+        try {
+            DB::beginTransaction();
+            $request->user()->delete();
+            DB::commit();
+
+            return response(['message'=>'کاربر با موفقیت غیر فعال شد.برای فعال شدن نیاز به ورود مجدد می باشد.'], Response::HTTP_OK);
+        }catch (Exception $exception){
+            DB::rollBack();
+            Log::error($exception);
+
+            return response(['message'=>'غیرفعال شدن کاربر با شکست مواجه شد.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }

@@ -52,7 +52,7 @@ class CommentController extends Controller
     public function delete(DeleteCommentRequest $request)
     {
         try {
-            DB::transaction();
+            DB::beginTransaction();
             $request->comment->delete();
             DB::commit();
 

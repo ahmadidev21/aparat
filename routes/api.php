@@ -44,6 +44,7 @@ Route::group(['middleware'=>['auth:api']], function (){
         Route::match(['post', 'get'],'{channel}/unfollow',[UserController::class, 'unFollow'])->name('user.unfollow');
         Route::get('followings', [UserController::class, 'followings'])->name('user.following');
         Route::get('followers', [UserController::class, 'followers'])->name('user.followers');
+        Route::delete('/me', [UserController::class, 'unRegister'])->name('user.delete');
     });
 });
 
