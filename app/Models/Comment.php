@@ -50,9 +50,9 @@ class Comment extends Model
     //endregion static method
 
     //region override method
-//    public function getRouteKeyName()
-//    {
-//        return 'id';
-//    }
+    public function getRouteKeyName()
+    {
+        return 'id';
+    }
     //endregion override method
 }

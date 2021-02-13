@@ -111,7 +111,7 @@ Route::group(['middleware'=>['auth:api'], 'prefix'=>'/tag'], function (){
 Route::group(['middleware'=>['auth:api'], 'prefix'=>'/comment'], function (){
     Route::get('/', [CommentController::class, 'index'])->name('comment.all');
     Route::post('/create', [CommentController::class, 'create'])->name('comment.create');
-//    Route::match(['post', 'put'], '/{comment}/state', [CommentController::class, 'changeState'])->name('comment.change-state');
+    Route::match(['post', 'put'], '/{comment}/state', [CommentController::class, 'changeState'])->name('comment.change-state');
 
 });
 

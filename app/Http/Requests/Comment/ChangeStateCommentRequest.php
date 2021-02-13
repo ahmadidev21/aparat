@@ -4,9 +4,10 @@ namespace App\Http\Requests\Comment;
 
 use App\Models\Comment;
 use Illuminate\Validation\Rules\In;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Http\FormRequest;
 
-class ListCommentRequest extends FormRequest
+class ChangeStateCommentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -15,7 +16,7 @@ class ListCommentRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return Gate::allows('changeState', [$this->comment, $this->state]);
     }
 
     /**
@@ -26,7 +27,7 @@ class ListCommentRequest extends FormRequest
     public function rules()
     {
         return [
-            'state'=>['nullable', new In(Comment::STATES)]
+            'state'=>['required', new In([Comment::STATE_ACCEPTED, Comment::STATE_READ])]
         ];
     }
 }
