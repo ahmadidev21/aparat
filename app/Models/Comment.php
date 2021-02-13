@@ -38,6 +38,11 @@ class Comment extends Model
         return $this->belongsTo(Comment::class, 'parent_id');
     }
 
+    public function children()
+    {
+        return $this->hasMany(Comment::class, 'parent_id');
+    }
+
     //endregion relation
 
     //region static method
@@ -53,6 +58,14 @@ class Comment extends Model
     public function getRouteKeyName()
     {
         return 'id';
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+        static::deleting(function ($comment){
+            $comment->children()->delete();
+        });
     }
     //endregion override method
 }

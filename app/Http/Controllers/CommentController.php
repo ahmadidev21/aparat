@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Models\Video;
 use App\Models\Comment;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\Comment\ListCommentRequest;
 use App\Http\Requests\Comment\CreateCommentRequest;
@@ -48,8 +51,17 @@ class CommentController extends Controller
 
     public function delete(DeleteCommentRequest $request)
     {
-        $request->comment->delete();
+        try {
+            DB::transaction();
+            $request->comment->delete();
+            DB::commit();
 
-        return response(['message'=>'حذف دیدگاه با موفقیت انجام شد.'], Response::HTTP_OK);
+            return response(['message'=>'حذف دیدگاه با موفقیت انجام شد.'], Response::HTTP_OK);
+        }catch (Exception $exception){
+            DB::rollBack();
+            Log::error($exception);
+
+            return response(['message'=>'حذف دیدگاه با شکست مواجه شد.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }
