@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VideoController;
 use App\Http\Controllers\ChannelController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PlaylistController;
 use Laravel\Passport\Http\Controllers\AccessTokenController;
@@ -103,6 +104,18 @@ Route::group(['middleware'=>['auth:api'], 'prefix'=>'/tag'], function (){
     Route::get('/', [TagController::class, 'index'])->name('playlist.all');
     Route::post('/create', [TagController::class, 'create'])->name('playlist.create');
 });
+
+/**
+ * Rout Group for comment
+ */
+Route::group(['middleware'=>['auth:api'], 'prefix'=>'/comment'], function (){
+    Route::get('/', [CommentController::class, 'index'])->name('comment.all');
+    Route::post('/create', [CommentController::class, 'create'])->name('comment.create');
+//    Route::match(['post', 'put'], '/{comment}/state', [CommentController::class, 'changeState'])->name('comment.change-state');
+
+});
+
+
 //Route::middleware('auth:api')->get('/user', function (Request $request) {
 //    return $request->user();
 //});

@@ -74,5 +74,6 @@ class RouteServiceProvider extends ServiceProvider
     {
         Route::model('video', Video::class);
         Route::model('channel', Channel::class);
+//        Route::model('comment', Channel::class);
     }
 }

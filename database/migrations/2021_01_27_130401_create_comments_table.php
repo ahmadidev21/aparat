@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Comment;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -19,7 +20,7 @@ class CreateCommentsTable extends Migration
             $table->foreignId('video_id')->constrained('videos', 'id')->onDelete('CASCADE')->onUpdate('CASCADE');
             $table->foreignId('parent_id')->nullable()->constrained('comments', 'id')->onDelete('CASCADE')->onUpdate('CASCADE');
             $table->text('body');
-            $table->timestamp('accepted_at')->nullable();
+            $table->enum('state',Comment::STATES)->default(Comment::STATE_PENDING);
             $table->timestamps();
         });
     }
