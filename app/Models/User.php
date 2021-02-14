@@ -69,7 +69,7 @@ class User extends Authenticatable
      */
     public function findForPassport($username)
     {
-        $user = static::where('mobile', $username)->orWhere('email', $username)->first();
+        $user = static::withTrashed()->where('mobile', $username)->orWhere('email', $username)->first();
         return $user;
     }
 
@@ -180,6 +180,11 @@ class User extends Authenticatable
         static::deleting(function ($user){
             $user->channelVideos()->delete();
             $user->playlists()->delete();
+        });
+
+        static::restoring(function ($user){
+            $user->channelVideos()->restore();
+            $user->playlists()->restore();
         });
     }
     //endregion override method
