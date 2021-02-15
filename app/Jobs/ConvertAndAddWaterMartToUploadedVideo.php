@@ -33,10 +33,7 @@ class ConvertAndAddWaterMartToUploadedVideo implements ShouldQueue
      */
     private $authId;
 
-    /**
-     * @var bool
-     */
-    private bool $addWatermark;
+//    public $deleteWhenMissingModels  = true;
 
     /**
      * Create a new job instance.
@@ -62,6 +59,11 @@ class ConvertAndAddWaterMartToUploadedVideo implements ShouldQueue
     public function handle()
     {
         $videoUploadedPath = '/temp/' . $this->videoId;
+        //if $this->video not exist in videos table
+        if(!Video::where('id', $this->vid)->count()){
+            Storage::disk('videos')->delete($videoUploadedPath);
+            return;
+        }
         $videoUploaded = FFMpeg::fromDisk('videos')->open($videoUploadedPath);
 
         $format = new X264('libmp3lame');

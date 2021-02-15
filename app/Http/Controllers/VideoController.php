@@ -7,6 +7,7 @@ use App\Models\Video;
 use App\Models\Playlist;
 use App\Events\VisitVideo;
 use Illuminate\Support\Str;
+use App\Events\DeleteVideo;
 use App\Models\VideoFavorite;
 use App\Models\VideoRepublish;
 use App\Events\UploadeNewVideo;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Video\LikeRequest;
+use App\Http\Requests\DeleteVideoRequest;
 use App\Http\Requests\Video\unLikeRequest;
 use App\Http\Requests\Video\ShowVideoRequest;
 use Symfony\Component\HttpFoundation\Response;
@@ -201,6 +203,23 @@ class VideoController extends Controller
     {
         event(new VisitVideo($request->video));
         return $request->video;
+    }
+
+    public function delete(DeleteVideoRequest $request)
+    {
+        try {
+            DB::beginTransaction();
+            $request->video->forceDelete();
+            event(new DeleteVideo($request->video));
+            DB::commit();
+
+            return response(['message'=>'حذف ویدیو با موفقیت انحام شد.'], Response::HTTP_OK);
+        }catch (Exception $exception){
+            DB::rollBack();
+            Log::error($exception);
+            return response(['message'=>' ویدیوحذف نشد.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
     }
 
 

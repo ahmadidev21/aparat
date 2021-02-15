@@ -3,15 +3,17 @@
 namespace App\Providers;
 
 use App\Events\VisitVideo;
-//use App\Events\UploadeNewVideoLaravel\Passport\Events\AccessTokenCreated;
+use App\Events\DeleteVideo;
+use App\Listeners\DeleteVideoData;
 use App\Events\ActiveUnregisterUser;
+use App\Events\UploadeNewVideo;
 use Illuminate\Auth\Events\Registered;
 use App\Listeners\ProcessUploadedVideo;
 use App\Listeners\AddVisitVideoLogToVideoView;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
 use  Laravel\Passport\Events\AccessTokenCreated;
+use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -26,18 +28,25 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         UploadeNewVideo::class=>[
-            ProcessUploadedVideo::class
+            ProcessUploadedVideo::class,
         ],
 
         VisitVideo::class=>[
-            AddVisitVideoLogToVideoView::class
+            AddVisitVideoLogToVideoView::class,
         ],
+
+        DeleteVideo::class=>[
+            DeleteVideoData::class,
+        ],
+
         AccessTokenCreated::class=>[
-            'App\Listeners\ActiveUnregisterUserAfterLogin'
+            'App\Listeners\ActiveUnregisterUserAfterLogin',
         ],
+
         ActiveUnregisterUser::class=>[
             //TODO: The things should do it
-        ]
+        ],
+
     ];
 
     /**
