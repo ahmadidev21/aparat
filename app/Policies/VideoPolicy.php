@@ -69,4 +69,9 @@ class VideoPolicy
     {
         return $video->user_id === $user->id;
     }
+
+    public function showStatistics(User $user, Video $video)
+    {
+        return $user->id === $video->user_id;
+    }
 }

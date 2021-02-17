@@ -76,6 +76,7 @@ Route::group(['middleware'=>[], 'prefix'=>'/video'], function (){
         Route::post('/{video}/republish',[VideoController::class, 'republish'])->name('video.republish');
         Route::get('liked', [VideoController::class, 'likedByCurrentUser'])->name('video.liked');
         Route::delete('/{video}',[VideoController::class, 'delete'])->name('video.delete');
+        Route::get('/{video}/statistics', [VideoController::class, 'statistics'])->name('video.statistics');
 
     });
 });

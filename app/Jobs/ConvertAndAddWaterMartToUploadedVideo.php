@@ -36,6 +36,11 @@ class ConvertAndAddWaterMartToUploadedVideo implements ShouldQueue
 //    public $deleteWhenMissingModels  = true;
 
     /**
+     * @var bool
+     */
+    private bool $addWatermark;
+
+    /**
      * Create a new job instance.
      *
      * @param  \App\Models\Video  $video
@@ -60,7 +65,7 @@ class ConvertAndAddWaterMartToUploadedVideo implements ShouldQueue
     {
         $videoUploadedPath = '/temp/' . $this->videoId;
         //if $this->video not exist in videos table
-        if(!Video::where('id', $this->vid)->count()){
+        if(!Video::where('id', $this->video->id)->count()){
             Storage::disk('videos')->delete($videoUploadedPath);
             return;
         }

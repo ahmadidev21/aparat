@@ -28,6 +28,7 @@ use App\Http\Requests\User\FollowingsUserRequest;
 use App\Http\Requests\Video\RepublishVideoRequest;
 use App\Http\Requests\Video\ChangeStateVideoRequest;
 use App\Http\Requests\Video\UploadVideoBannerRequest;
+use App\Http\Requests\Video\ShowVideoStatisticsRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class VideoController extends Controller
@@ -220,6 +221,27 @@ class VideoController extends Controller
             return response(['message'=>' ویدیوحذف نشد.'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
+    }
+
+    public function statistics(ShowVideoStatisticsRequest $request)
+    {
+        $fromDate = now()->subDays($request->get('last_n_days', 7))->toDateString();
+
+        $data = [
+            'views'=>[],
+            'total_views'=>0,
+        ];
+
+        Video::views(auth('api')->id())
+            ->where('videos.id', $request->video->id)
+            ->whereRaw("date(video_views.created_at) >= '{$fromDate}'")
+            ->selectRaw('date(video_views.created_at) as date, count(*) as views')
+            ->groupByRaw('date(video_views.created_at)')->get()->each(function ($item)use (&$data){
+                $data['views'][$item->date] = $item->views;
+                $data['total_views'] += $item->views;
+            });
+
+        return $data;
     }
 
 
