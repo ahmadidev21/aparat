@@ -104,6 +104,7 @@ class Video extends Model
             $condition['user_ip'] = client_ip();
         }
         $data['like'] = VideoFavorite::query()->where($condition)->count();
+        $data['tags'] = $this->tags;
 
         return $data;
     }

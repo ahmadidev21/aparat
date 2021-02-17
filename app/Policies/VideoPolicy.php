@@ -23,6 +23,7 @@ class VideoPolicy
             && $video->isAccepted()
             && ($user->id != $video->user_id && VideoRepublish::where(['user_id'=>$user->id,'video_id'=>$video->id])->count() < 1);
     }
+
     // if user is anonymous must $user is null by default
     public function like(User $user=null, Video $video)
     {
@@ -71,6 +72,11 @@ class VideoPolicy
     }
 
     public function showStatistics(User $user, Video $video)
+    {
+        return $user->id === $video->user_id;
+    }
+
+    public function update(User $user, Video $video)
     {
         return $user->id === $video->user_id;
     }

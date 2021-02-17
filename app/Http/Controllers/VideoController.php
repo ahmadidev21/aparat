@@ -23,6 +23,7 @@ use App\Http\Requests\Video\ListVideosRequest;
 use App\Http\Requests\Video\UploadVideoRequest;
 use App\Http\Requests\Video\CreateVideoRequest;
 use App\Http\Requests\Video\LikedByCurrentUser;
+use App\Http\Requests\Video\UpdateVideoRequest;
 use App\Http\Requests\User\FollowersUserRequest;
 use App\Http\Requests\User\FollowingsUserRequest;
 use App\Http\Requests\Video\RepublishVideoRequest;
@@ -242,6 +243,40 @@ class VideoController extends Controller
             });
 
         return $data;
+    }
+
+    public function update(UpdateVideoRequest $request)
+    {
+        $video = $request->video;
+
+        try {
+            DB::beginTransaction();
+
+            if($request->has('title')) $video->title = $request->title;
+            if($request->has('info')) $video->info = $request->info;
+            if($request->has('category_id')) $video->category_id = $request->category_id;
+            if($request->has('channel_category')) $video->channel_category = $request->channel_category;
+            if($request->has('enable_comments')) $video->enable_comments = $request->enable_comments;
+
+            if($request->banner){
+                Storage::disk('videos')->delete(auth()->id() . '/' . $video->banner);
+                Storage::disk('videos')->move('temp/' . $request->banner, auth()->id() . '/' . $video->banner);
+            }
+
+            if(!empty($request->tags)){
+                $video->tags()->sync($request->tags);
+            }
+
+            DB::commit();
+
+            return response([$video], Response::HTTP_OK);
+
+        }catch (Exception $exception){
+            DB::rollBack();
+            Log::error($exception);
+
+            return response(['message'=>'خطایی در سمت سرور رخ داده است.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
 

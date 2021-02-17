@@ -73,6 +73,7 @@ Route::group(['middleware'=>[], 'prefix'=>'/video'], function (){
         Route::post('/upload-banner', [VideoController::class, 'uploadBanner'])->name('video.upload-banner');
         Route::post('/', [VideoController::class, 'createVideo'])->name('video.create');
         Route::put('/{video}/state', [VideoController::class, 'changeState'])->name('video.change-state');
+        Route::put('/{video}/update', [VideoController::class, 'update'])->name('video.update');
         Route::post('/{video}/republish',[VideoController::class, 'republish'])->name('video.republish');
         Route::get('liked', [VideoController::class, 'likedByCurrentUser'])->name('video.liked');
         Route::delete('/{video}',[VideoController::class, 'delete'])->name('video.delete');
