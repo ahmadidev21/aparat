@@ -255,7 +255,7 @@ class VideoController extends Controller
             if($request->has('title')) $video->title = $request->title;
             if($request->has('info')) $video->info = $request->info;
             if($request->has('category_id')) $video->category_id = $request->category_id;
-            if($request->has('channel_category')) $video->channel_category = $request->channel_category;
+            if($request->has('channel_category')) $video->channel_category_id = $request->channel_category;
             if($request->has('enable_comments')) $video->enable_comments = $request->enable_comments;
 
             if($request->banner){
@@ -266,7 +266,7 @@ class VideoController extends Controller
             if(!empty($request->tags)){
                 $video->tags()->sync($request->tags);
             }
-
+            $video->save();
             DB::commit();
 
             return response([$video], Response::HTTP_OK);
