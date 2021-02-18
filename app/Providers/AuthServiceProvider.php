@@ -5,10 +5,12 @@ namespace App\Providers;
 use App\Models\User;
 use App\Models\Video;
 use App\Models\Comment;
+use App\Models\Playlist;
 use App\Policies\UserPolicy;
 use App\Policies\VideoPolicy;
 use Laravel\Passport\Passport;
 use App\Policies\CommentPolicy;
+use App\Policies\PlaylistPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -23,7 +25,8 @@ class AuthServiceProvider extends ServiceProvider
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
         User::class => UserPolicy::class,
         Video::class => VideoPolicy::class,
-        Comment::class => CommentPolicy::class
+        Comment::class => CommentPolicy::class,
+        Playlist::class => PlaylistPolicy::class
     ];
 
     /**

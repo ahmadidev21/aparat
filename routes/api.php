@@ -99,6 +99,7 @@ Route::group(['middleware'=>['auth:api'], 'prefix'=>'/playlist'], function (){
     Route::get('/', [PlaylistController::class, 'getAllPlaylist'])->name('playlist.all');
     Route::get('/my', [PlaylistController::class, 'getMyPlaylist'])->name('playlist.my');
     Route::post('/create', [PlaylistController::class, 'create'])->name('playlist.create');
+    Route::match(['post', 'put'],'/{playlist}/{video}', [PlaylistController::class, 'addVideo'])->name('playlist.add-video');
 });
 
 /**
