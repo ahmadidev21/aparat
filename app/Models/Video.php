@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,10 +13,20 @@ class Video extends Model
 
     //region state
     const STATE_PENDING = 'pending';
+
     const STATE_CONVERTED = 'converted';
+
     const STATE_ACCEPTED = 'accepted';
+
     const STATE_BLOCKED = 'blocked';
-    const STATES = [self::STATE_PENDING, self::STATE_CONVERTED, self::STATE_ACCEPTED, self::STATE_BLOCKED];
+
+    const STATES = [
+        self::STATE_PENDING,
+        self::STATE_CONVERTED,
+        self::STATE_ACCEPTED,
+        self::STATE_BLOCKED,
+    ];
+
     //endregion state
 
     //region custom method
@@ -56,9 +67,22 @@ class Video extends Model
         'banner',
         'enable_comments',
         'publish_at',
-        'state'
+        'state',
     ];
+
     //endregion model config
+
+    //region getter(attribute)
+    public function getVideoLinkAttribute()
+    {
+        return Storage::disk('videos')->url($this->user->id . '/' . $this->slug . '.mp4');
+    }
+
+    public function getBannerLinkAttribute()
+    {
+        return Storage::disk('videos')->url($this->user->id . '/' . $this->slug . '-banner');
+    }
+    //endregion getter(attribute)
 
     //region relation
     public function tags()
@@ -97,13 +121,16 @@ class Video extends Model
     {
         $data = parent::toArray();
         $condition = [
-            'video_id'=>$this->id,
-            'user_id'=> auth('api')->check() ? auth('api')->id() : null
+            'video_id' => $this->id,
+            'user_id' => auth('api')->check() ? auth('api')->id() : null,
         ];
-        if(!auth('api')->check()){
+        if (! auth('api')->check()) {
             $condition['user_ip'] = client_ip();
         }
+        $data['link'] = $this->video_link;
+        $data['banner_link'] = $this->bannerLink;
         $data['like'] = VideoFavorite::query()->where($condition)->count();
+        $data['views'] = VideoView::query()->where('video_id', $this->id)->count();
         $data['tags'] = $this->tags;
 
         return $data;
@@ -121,16 +148,16 @@ class Video extends Model
         return Video::whereRaw('id in(select video_id from video_republishes)');
     }
 
-    public static function views($userId){
+    public static function views($userId)
+    {
         //TODO: anonymous user view
-        return static::query()->where('videos.user_id',$userId)
-            ->join('video_views', 'video_views.video_id', '=','videos.id');
+        return static::query()->where('videos.user_id', $userId)->join('video_views', 'video_views.video_id', '=', 'videos.id');
     }
 
-    public static function channelComments($userId){
+    public static function channelComments($userId)
+    {
 
-        return static::query()->join('comments', 'comments.video_id', '=','videos.id')
-            ->where('videos.user_id',$userId);
+        return static::query()->join('comments', 'comments.video_id', '=', 'videos.id')->where('videos.user_id', $userId);
     }
     //endregion custom static method
 }
