@@ -66,7 +66,6 @@ Route::group(['middleware'=>[], 'prefix'=>'/video'], function (){
     Route::post('/{video}/like', [VideoController::class, 'like'])->name('video.like');
     Route::post('/{video}/unLike', [VideoController::class, 'unLike'])->name('video.unLike');
     Route::get('/', [VideoController::class, 'index'])->name('video.list-videos');
-    Route::get('/{video}', [VideoController::class, 'show'])->name('video.show');
 
     Route::group(['middleware'=>['auth:api']], function (){
         Route::post('/upload', [VideoController::class, 'uploadVideo'])->name('video.upload');
@@ -80,6 +79,8 @@ Route::group(['middleware'=>[], 'prefix'=>'/video'], function (){
         Route::get('/{video}/statistics', [VideoController::class, 'statistics'])->name('video.statistics');
 
     });
+
+    Route::get('/{video}', [VideoController::class, 'show'])->name('video.show');
 });
 
 /**

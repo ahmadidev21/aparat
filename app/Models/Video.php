@@ -120,18 +120,10 @@ class Video extends Model
     public function toArray()
     {
         $data = parent::toArray();
-        $condition = [
-            'video_id' => $this->id,
-            'user_id' => auth('api')->check() ? auth('api')->id() : null,
-        ];
-        if (! auth('api')->check()) {
-            $condition['user_ip'] = client_ip();
-        }
+
         $data['link'] = $this->video_link;
         $data['banner_link'] = $this->bannerLink;
-        $data['like'] = VideoFavorite::query()->where($condition)->count();
         $data['views'] = VideoView::query()->where('video_id', $this->id)->count();
-        $data['tags'] = $this->tags;
 
         return $data;
     }

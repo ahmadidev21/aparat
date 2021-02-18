@@ -204,7 +204,19 @@ class VideoController extends Controller
     public function show(ShowVideoRequest $request)
     {
         event(new VisitVideo($request->video));
-        return $request->video;
+        $videoData = $request->video->toArray();
+        $condition = [
+            'video_id' => $request->video->id,
+            'user_id' => auth('api')->check() ? auth('api')->id() : null,
+        ];
+        if (! auth('api')->check()) {
+            $condition['user_ip'] = client_ip();
+        }
+        $videoData['like'] = VideoFavorite::query()->where($condition)->count();
+        $videoData['comments'] = $request->video->comments()->paginate();
+        $videoData['tags'] = $request->video->tags;
+
+        return $videoData;
     }
 
     public function delete(DeleteVideoRequest $request)
