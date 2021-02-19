@@ -213,8 +213,9 @@ class VideoController extends Controller
             $condition['user_ip'] = client_ip();
         }
         $videoData['like'] = VideoFavorite::query()->where($condition)->count();
-        $videoData['comments'] = $request->video->comments()->paginate();
         $videoData['tags'] = $request->video->tags;
+
+        $videoData['comments'] = sort_comments($request->video->comments);
 
         return $videoData;
     }
