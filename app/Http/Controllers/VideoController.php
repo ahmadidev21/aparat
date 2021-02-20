@@ -214,8 +214,8 @@ class VideoController extends Controller
         }
         $videoData['like'] = VideoFavorite::query()->where($condition)->count();
         $videoData['tags'] = $request->video->tags;
-
         $videoData['comments'] = sort_comments($request->video->comments);
+        $videoData['related_videos'] = $request->video->related()->take(5)->get();
 
         return $videoData;
     }

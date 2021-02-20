@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -108,6 +109,18 @@ class Video extends Model
     public function comments()
     {
         return $this->hasMany(Comment::class);
+    }
+
+    public function related()
+    {
+        return static::query()->selectRaw('COUNT(*) as related_tags, videos.*')
+            ->leftJoin('video_tags', 'videos.id', '=', 'video_tags.video_id')
+            ->whereRaw('videos.id !=' . $this->id)->whereRaw("videos.state ='" . self::STATE_ACCEPTED . "'")
+            ->whereIn(DB::raw('video_tags.tag_id'), function ($query) {
+                $query->selectRaw('video_tags.tag_id')->from('videos')
+                    ->leftJoin('video_tags', 'videos.id', '=', 'video_tags.video_id')
+                    ->whereRaw('videos.id =' . $this->id);
+            })->groupByRaw('videos.id')->orderBy('related_tags', 'desc');
     }
     //endregion relation
 
