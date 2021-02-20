@@ -49,6 +49,6 @@ class CanChangeVieoState implements Rule
      */
     public function message()
     {
-        return 'The valid state.';
+        return 'state is invalid';
     }
 }

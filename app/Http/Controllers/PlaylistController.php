@@ -6,8 +6,10 @@ use App\Models\Playlist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Requests\Playlist\ShowPlaylistRequest;
 use App\Http\Requests\Playlist\CreatePlaylistRequest;
 use App\Http\Requests\Playlist\AddVideoToPlaylistRequest;
+use App\Http\Requests\Playlist\SortVideoInPlaylistRequest;
 
 class PlaylistController extends Controller
 {
@@ -38,5 +40,18 @@ class PlaylistController extends Controller
         $request->playlist->videos()->attach($request->video->id);
 
         return response(['message'=>'ویدیو با موفقیت به لیست پخش مورد نظر اضافه شد.'], Response::HTTP_OK);
+    }
+
+    public function show(ShowPlaylistRequest $request)
+    {
+        return Playlist::query()->with('videos')->find($request->playlist->id);
+    }
+    
+    public function sortVideosInPlaylist(SortVideoInPlaylistRequest $request)
+    {
+        $request->playlist->videos()->detach($request->videos);
+        $request->playlist->videos()->attach($request->videos);
+
+        return response(['message'=>'لیست پخش با موفقیت مرتب سازی شد.'], Response::HTTP_ACCEPTED);
     }
 }
