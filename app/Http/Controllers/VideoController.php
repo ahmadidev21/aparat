@@ -29,6 +29,7 @@ use App\Http\Requests\User\FollowingsUserRequest;
 use App\Http\Requests\Video\RepublishVideoRequest;
 use App\Http\Requests\Video\ChangeStateVideoRequest;
 use App\Http\Requests\Video\UploadVideoBannerRequest;
+use App\Http\Requests\Video\FavoriteVideoListRequest;
 use App\Http\Requests\Video\ShowVideoStatisticsRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -291,6 +292,24 @@ class VideoController extends Controller
 
             return response(['message'=>'خطایی در سمت سرور رخ داده است.'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public function favorite(FavoriteVideoListRequest $request)
+    {
+        $videos =  $request->user()->favoriteVideos()
+            ->selectRaw('videos.*, channels.name channel_nam')
+            ->leftJoin('channels', 'channels.user_id', '=', 'videos.user_id')
+            ->get();
+
+        return [
+            'videos'=>$videos,
+            'total_fav_videos'=>count($videos),
+            'total_comments'=> Video::channelComments(auth('api')->id())
+                ->selectRaw('comments.*')
+                ->count(), //TODO: addition accepted comments
+            'total_videos' => $request->user()->channelVideos()->count(),
+            'total_views' => Video::views(auth('api')->id())->count()
+        ];
     }
 
 
